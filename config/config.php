@@ -2,7 +2,7 @@
 
 return [
     'version' => class_exists('\PackageVersions\Versions') 
-        ? explode('@', \PackageVersions\Versions::getVersion('hacoidev/ophim-core') ?? '1.0.0')[0] 
+        ? explode('@', \PackageVersions\Versions::getVersion('jhin1m/mangacore') ?? '1.0.0')[0] 
         : '1.0.0',
     
     // Legacy episode configuration (for backward compatibility)

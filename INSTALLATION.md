@@ -784,9 +784,9 @@ npm run dev --verbose
 If you encounter issues during installation:
 
 1. Check the [troubleshooting section](README.md#troubleshooting) in the main README
-2. Search existing [GitHub issues](https://github.com/hacoidev/manga-core/issues)
+2. Search existing [GitHub issues](https://github.com/jhin1m/mangacore/issues)
 3. Create a new issue with detailed error information
-4. Join the [community discussions](https://github.com/hacoidev/manga-core/discussions)
+4. Join the [community discussions](https://github.com/jhin1m/mangacore/discussions)
 
 ## Next Steps
 

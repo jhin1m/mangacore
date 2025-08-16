@@ -579,9 +579,9 @@ A: Use the GitHub issue tracker to report bugs or request features. Please provi
 
 ## Support
 
-- **Documentation**: [https://github.com/hacoidev/manga-core/wiki](https://github.com/hacoidev/manga-core/wiki)
-- **Issues**: [https://github.com/hacoidev/manga-core/issues](https://github.com/hacoidev/manga-core/issues)
-- **Discussions**: [https://github.com/hacoidev/manga-core/discussions](https://github.com/hacoidev/manga-core/discussions)
+- **Documentation**: [https://github.com/jhin1m/mangacore/wiki](https://github.com/jhin1m/mangacore/wiki)
+- **Issues**: [https://github.com/jhin1m/mangacore/issues](https://github.com/jhin1m/mangacore/issues)
+- **Discussions**: [https://github.com/jhin1m/mangacore/discussions](https://github.com/jhin1m/mangacore/discussions)
 
 ## License
 
