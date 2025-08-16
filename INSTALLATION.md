@@ -83,7 +83,7 @@ composer create-project laravel/laravel manga-site "7.*"
 
 ```bash
 # Install MangaCore package
-composer require hacoidev/manga-core -W
+composer require jhin1m/mangacore -W
 
 # Install additional dependencies
 composer require hacoidev/laravel-caching-model
@@ -181,7 +181,7 @@ npm run dev
 cd /path/to/your/laravel/project
 
 # Install MangaCore
-composer require hacoidev/manga-core -W
+composer require jhin1m/mangacore -W
 ```
 
 #### Step 2: Publish and Configure

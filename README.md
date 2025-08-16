@@ -47,7 +47,7 @@ A comprehensive Laravel package for manga and comic content management systems. 
 ### Step 1: Install Package
 
 ```bash
-composer require hacoidev/manga-core -W
+composer require jhin1m/mangacore -W
 ```
 
 ### Step 2: Publish and Run Migrations
