@@ -1,13 +1,19 @@
 {
-    "name": "hacoidev/ophim-core",
-    "description": "Ophim's core features",
+    "name": "jhin1m/mangacore",
+    "description": "MangaCore - Laravel package for manga reading platform management. Complete refactor from OphimCore movie streaming CMS to manga content management system.",
     "type": "library",
+    "keywords": ["laravel", "php", "manga", "cms", "content-management", "reading-platform", "backpack", "laravel-package", "manga-reader", "image-processing"],
+    "homepage": "https://github.com/jhin1m/mangacore",
     "authors": [
         {
-            "name": "hacoidev",
-            "email": "hacoi.dev@gmail.com"
+            "name": "jhin1m",
+            "email": "your-email@example.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/jhin1m/mangacore/issues",
+        "source": "https://github.com/jhin1m/mangacore"
+    },
     "require": {
         "laravel/framework": "^6|^7|^8",
         "ckfinder/ckfinder-laravel-package": "v3.5.2.1",
