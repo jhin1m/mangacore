@@ -1,10 +1,14 @@
 <!-- This file is used to store sidebar items, starting with Backpack\Base 0.9.0 -->
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('dashboard') }}"><i class="la la-home nav-icon"></i>
         {{ trans('backpack::base.dashboard') }}</a></li>
-<li class="nav-title">Phim</li>
+<li class="nav-title">Manga</li>
 <li class='nav-item'>
-    <a class='nav-link' href='{{ backpack_url('movie') }}'><i class='nav-icon la la-play-circle'></i>
-        Quản lý phim</a>
+    <a class='nav-link' href='{{ backpack_url('manga') }}'><i class='nav-icon la la-book'></i>
+        Quản lý manga</a>
+</li>
+<li class='nav-item'>
+    <a class='nav-link' href='{{ backpack_url('chapter') }}'><i class='nav-icon la la-file-text'></i>
+        Quản lý chapter</a>
 </li>
 
 <li class="nav-item nav-dropdown"><a class="nav-link nav-dropdown-toggle" href="#"><i
@@ -17,23 +21,19 @@
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('tag') }}'><i class='nav-icon la la-link'></i>
                 Tags</a>
         </li>
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('region') }}'><i
-                    class='nav-icon la la-globe'></i> Khu
-                vực</a></li>
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('actor') }}'><i
-                    class='nav-icon la la-gratipay'></i>
-                Diễn viên</a></li>
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('director') }}'><i
-                    class='nav-icon la la-odnoklassniki'></i> Đạo diễn</a></li>
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('studio') }}'><i
-                    class='nav-icon la la-connectdevelop'></i> Studio</a></li>
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('origin') }}'><i
+                    class='nav-icon la la-globe'></i> Xuất xứ</a></li>
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('author') }}'><i
+                    class='nav-icon la la-user-edit'></i>
+                Tác giả</a></li>
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('artist') }}'><i
+                    class='nav-icon la la-paint-brush'></i> Họa sĩ</a></li>
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('publisher') }}'><i
+                    class='nav-icon la la-building'></i> Nhà xuất bản</a></li>
     </ul>
 </li>
 
-<li class='nav-item'>
-    <a class='nav-link' href='{{ backpack_url('episode') }}'><i class='nav-icon la la-info-circle'></i>
-        Phim lỗi</a>
-</li>
+
 
 <li class="nav-title">Tuỳ chỉnh</li>
 <li class="nav-item nav-dropdown"><a class="nav-link nav-dropdown-toggle" href="#"><i
@@ -56,9 +56,9 @@
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('setting/group/metas/edit') }}'><i
                     class='nav-icon la la-chevron-circle-up'></i>
                 <span>SEO</span></a></li>
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('setting/group/jwplayer/edit') }}'><i
-                    class='nav-icon la la-play'></i>
-                <span>Jwplayer</span></a></li>
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('setting/group/reader/edit') }}'><i
+                    class='nav-icon la la-book-reader'></i>
+                <span>Reader Settings</span></a></li>
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('setting/group/others/edit') }}'><i
                     class='nav-icon la la-slack'></i>
                 <span>Khác</span></a></li>

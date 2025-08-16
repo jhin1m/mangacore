@@ -4,6 +4,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * OBSOLETE: This migration is kept for reference only.
+ * The episodes table has been replaced by the chapters table in the manga refactor.
+ * This migration should not be run in new installations.
+ */
 class CreateEpisodesTable extends Migration
 {
     /**
@@ -13,6 +18,13 @@ class CreateEpisodesTable extends Migration
      */
     public function up()
     {
+        // OBSOLETE: This migration is skipped as the episodes table has been replaced by chapters table.
+        // The manga refactor provides equivalent functionality with the chapters table structure.
+        // This migration is preserved for reference and potential rollback scenarios only.
+        return;
+
+        // Original migration code preserved for reference:
+        /*
         Schema::create('episodes', function (Blueprint $table) {
             $table->bigIncrements('id');
 
@@ -30,6 +42,7 @@ class CreateEpisodesTable extends Migration
 
             $table->index(['movie_id', 'slug']);
         });
+        */
     }
 
     /**

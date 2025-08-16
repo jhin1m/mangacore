@@ -4,6 +4,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * OBSOLETE: This migration is kept for reference only.
+ * The movies table has been replaced by the mangas table in the manga refactor.
+ * This migration should not be run in new installations.
+ */
 class CreateMoviesTable extends Migration
 {
     /**
@@ -13,6 +18,13 @@ class CreateMoviesTable extends Migration
      */
     public function up()
     {
+        // OBSOLETE: This migration is skipped as the movies table has been replaced by mangas table.
+        // The manga refactor provides equivalent functionality with the mangas table structure.
+        // This migration is preserved for reference and potential rollback scenarios only.
+        return;
+
+        // Original migration code preserved for reference:
+        /*
         Schema::create('movies', function (Blueprint $table) {
             $table->id();
             $table->string('name', 1024);
@@ -55,6 +67,7 @@ class CreateMoviesTable extends Migration
             $table->string('user_name')->nullable();
             $table->timestamps();
         });
+        */
     }
 
     /**

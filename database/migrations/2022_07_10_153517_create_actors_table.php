@@ -4,6 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * OBSOLETE: This migration is kept for reference only.
+ * The actors table has been replaced by the authors table in the manga refactor.
+ * This migration should not be run in new installations.
+ */
 class CreateActorsTable extends Migration
 {
     /**
@@ -13,6 +18,13 @@ class CreateActorsTable extends Migration
      */
     public function up()
     {
+        // OBSOLETE: This migration is skipped as the actors table has been replaced by authors table.
+        // The manga refactor provides equivalent functionality with the authors table structure.
+        // This migration is preserved for reference and potential rollback scenarios only.
+        return;
+
+        // Original migration code preserved for reference:
+        /*
         Schema::create('actors', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -26,6 +38,7 @@ class CreateActorsTable extends Migration
             $table->string('seo_key')->nullable();
             $table->timestamps();
         });
+        */
     }
 
     /**

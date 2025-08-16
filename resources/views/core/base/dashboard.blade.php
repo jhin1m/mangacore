@@ -5,14 +5,14 @@
         [
             'type' => 'alert',
             'class' => 'alert alert-dark mb-2 col-12',
-            'heading' => 'OPhimCMS - Tạo website xem phim miễn phí vĩnh viễn',
+            'heading' => 'MangaCore - Professional Manga Management System',
             'content' =>
                 '
-                Phiên bản: <span class="text-danger text-break">' .
+                Version: <span class="text-danger text-break">' .
                 config('ophim.version') .
                 '</span><br/>
-                Trang chủ: <a href="https://ophimcms.com">OPhimCMS.Com</a><br/>
-                Dữ liệu phim miễn phí: <a href="https://ophim5.cc">Ổ Phim</a>
+                Homepage: <a href="https://ophimcms.com">OPhimCMS.Com</a><br/>
+                Comprehensive manga content management system
             ',
             'close_button' => true, // show close button or not
         ],
@@ -25,6 +25,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.min.js"
         integrity="sha512-d8F1J2kyiRowBB/8/pAWsqUl0wSEOkG5KATkVV4slfblq9VRQ6MyDZVxWl2tWd+mPhuCbpTB4M7uU/x9FlgQ9Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         jQuery(document).ready(function($) {
@@ -70,6 +71,11 @@
             color: #FFF;
         }
 
+        .card-counter.warning {
+            background-color: #ff9800;
+            color: #FFF;
+        }
+
         .card-counter i {
             font-size: 5em;
             opacity: 0.2;
@@ -97,33 +103,33 @@
     <div class="row">
         <div class="col-md-2">
             <div class="card-counter primary">
-                <i class="la la-play-circle"></i>
-                <span class="count-numbers counter">{{ $count_movies }}</span>
-                <span class="count-name">Tổng số phim</span>
+                <i class="las la-book"></i>
+                <span class="count-numbers counter">{{ $count_manga }}</span>
+                <span class="count-name">Tổng số manga</span>
             </div>
         </div>
 
         <div class="col-md-2">
             <div class="card-counter info">
-                <i class="las la-server"></i>
-                <span class="count-numbers counter">{{ $count_episodes }}</span>
-                <span class="count-name">Tổng số tập</span>
-            </div>
-        </div>
-
-        <div class="col-md-2">
-            <div class="card-counter danger">
-                <i class="las la-bug"></i>
-                <span class="count-numbers counter">{{ $count_episodes_error }}</span>
-                <span class="count-name">Tập lỗi</span>
+                <i class="las la-bookmark"></i>
+                <span class="count-numbers counter">{{ $count_chapters }}</span>
+                <span class="count-name">Tổng số chapter</span>
             </div>
         </div>
 
         <div class="col-md-2">
             <div class="card-counter success">
+                <i class="las la-book-reader"></i>
+                <span class="count-numbers counter">{{ $count_daily_readers }}</span>
+                <span class="count-name">Độc giả hôm nay</span>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card-counter warning">
                 <i class="las la-user"></i>
                 <span class="count-numbers counter">{{ $count_users }}</span>
-                <span class="count-name">Users</span>
+                <span class="count-name">Người dùng</span>
             </div>
         </div>
 
@@ -143,7 +149,46 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <!-- Charts Row -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Phân bố trạng thái Manga</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="mangaStatusChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Hoạt động đọc 7 ngày qua</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="readingActivityChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popular Manga Chart -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Top 10 Manga phổ biến nhất</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="popularMangaChart" width="400" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Tables Row -->
+    <div class="row mt-4">
         <div class="p-3 col-md-4">
             <table class="table table-sm">
                 <thead>
@@ -152,10 +197,10 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white">
-                    @foreach ($top_view_day as $movie)
+                    @foreach ($top_view_day as $manga)
                         <tr>
-                            <td><a href="{{ $movie->getUrl() }}">{{ $movie->name }}</a></td>
-                            <td class="text-right"><span class="badge badge-success"><i class="las la-eye"></i> {{ $movie->view_day }}</span></td>
+                            <td><a href="{{ $manga->getUrl() }}">{{ $manga->title }}</a></td>
+                            <td class="text-right"><span class="badge badge-success"><i class="las la-eye"></i> {{ number_format($manga->view_day) }}</span></td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -169,10 +214,10 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white">
-                    @foreach ($top_view_week as $movie)
+                    @foreach ($top_view_week as $manga)
                         <tr>
-                            <td><a href="{{ $movie->getUrl() }}">{{ $movie->name }}</a></td>
-                            <td class="text-right"><span class="badge badge-success"><i class="las la-eye"></i> {{ $movie->view_week }}</span></td>
+                            <td><a href="{{ $manga->getUrl() }}">{{ $manga->title }}</a></td>
+                            <td class="text-right"><span class="badge badge-success"><i class="las la-eye"></i> {{ number_format($manga->view_week) }}</span></td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -186,14 +231,128 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white">
-                    @foreach ($top_view_month as $movie)
+                    @foreach ($top_view_month as $manga)
                         <tr>
-                            <td><a href="{{ $movie->getUrl() }}">{{ $movie->name }}</a></td>
-                            <td class="text-right"><span class="badge badge-success"><i class="las la-eye"></i> {{ $movie->view_month }}</span></td>
+                            <td><a href="{{ $manga->getUrl() }}">{{ $manga->title }}</a></td>
+                            <td class="text-right"><span class="badge badge-success"><i class="las la-eye"></i> {{ number_format($manga->view_month) }}</span></td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
+
+    <script>
+        // Manga Status Distribution Pie Chart
+        const statusCtx = document.getElementById('mangaStatusChart').getContext('2d');
+        const statusData = @json($manga_status_distribution);
+        
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(statusData),
+                datasets: [{
+                    data: Object.values(statusData),
+                    backgroundColor: [
+                        '#28a745', // Completed - Green
+                        '#007bff', // Ongoing - Blue  
+                        '#ffc107', // Hiatus - Yellow
+                        '#dc3545'  // Cancelled - Red
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Reading Activity Line Chart
+        const activityCtx = document.getElementById('readingActivityChart').getContext('2d');
+        const activityData = @json($reading_activity_data);
+        
+        new Chart(activityCtx, {
+            type: 'line',
+            data: {
+                labels: activityData.map(item => item.date),
+                datasets: [{
+                    label: 'Độc giả',
+                    data: activityData.map(item => item.readers),
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Popular Manga Bar Chart
+        const popularCtx = document.getElementById('popularMangaChart').getContext('2d');
+        const popularData = @json($popular_manga_data);
+        
+        new Chart(popularCtx, {
+            type: 'bar',
+            data: {
+                labels: popularData.map(item => item.title),
+                datasets: [{
+                    label: 'Lượt xem',
+                    data: popularData.map(item => item.views),
+                    backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Lượt xem: ' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 @endsection

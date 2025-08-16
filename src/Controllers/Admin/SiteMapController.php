@@ -10,13 +10,14 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL as LARURL;
 use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
-use Ophim\Core\Models\Actor;
+use Ophim\Core\Models\Author;
+use Ophim\Core\Models\Artist;
 use Ophim\Core\Models\Catalog;
 use Ophim\Core\Models\Category;
-use Ophim\Core\Models\Director;
-use Ophim\Core\Models\Movie;
-use Ophim\Core\Models\Region;
-use Ophim\Core\Models\Studio;
+use Ophim\Core\Models\Chapter;
+use Ophim\Core\Models\Manga;
+use Ophim\Core\Models\Origin;
+use Ophim\Core\Models\Publisher;
 use Ophim\Core\Models\Tag;
 use Prologue\Alerts\Facades\Alert;
 use Spatie\Sitemap\Sitemap;
@@ -120,43 +121,114 @@ class SiteMapController extends CrudController
         $this->add_styles('sitemap/categories-sitemap.xml');
         $sitemap_index->add('sitemap/categories-sitemap.xml');
 
-        $sitemap_regions = Sitemap::create();
-        Region::chunkById(100, function ($regions) use ($sitemap_regions) {
-            foreach ($regions as $region) {
-                $sitemap_regions->add(
-                    Url::create($region->getUrl())
+        $sitemap_origins = Sitemap::create();
+        Origin::chunkById(100, function ($origins) use ($sitemap_origins) {
+            foreach ($origins as $origin) {
+                $sitemap_origins->add(
+                    Url::create($origin->getUrl())
                         ->setLastModificationDate(now())
                         ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
                         ->setPriority(0.8)
                 );
             }
         });
-        $sitemap_regions->writeToFile(public_path('sitemap/regions-sitemap.xml'));
-        $this->add_styles('sitemap/regions-sitemap.xml');
-        $sitemap_index->add('sitemap/regions-sitemap.xml');
+        $sitemap_origins->writeToFile(public_path('sitemap/origins-sitemap.xml'));
+        $this->add_styles('sitemap/origins-sitemap.xml');
+        $sitemap_index->add('sitemap/origins-sitemap.xml');
 
-        $chunk = 0;
-        Movie::chunkById(200, function ($movies) use ($sitemap_index, &$chunk) {
-            $chunk++;
-            $sitemap_movies = null;
-            $sitemap_movies = Sitemap::create();
-            foreach ($movies as $movie) {
-                $sitemap_movies->add(
-                    Url::create($movie->getUrl())
-                        ->setLastModificationDate($movie->updated_at)
-                        ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+        // Authors sitemap
+        $sitemap_authors = Sitemap::create();
+        Author::chunkById(100, function ($authors) use ($sitemap_authors) {
+            foreach ($authors as $author) {
+                $sitemap_authors->add(
+                    Url::create($author->getUrl())
+                        ->setLastModificationDate(now())
+                        ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
                         ->setPriority(0.7)
                 );
             }
-            $sitemap_movies->writeToFile(public_path("sitemap/movies-sitemap{$chunk}.xml"));
-            $this->add_styles("sitemap/movies-sitemap{$chunk}.xml");
-            $sitemap_index->add("sitemap/movies-sitemap{$chunk}.xml");
+        });
+        $sitemap_authors->writeToFile(public_path('sitemap/authors-sitemap.xml'));
+        $this->add_styles('sitemap/authors-sitemap.xml');
+        $sitemap_index->add('sitemap/authors-sitemap.xml');
+
+        // Artists sitemap
+        $sitemap_artists = Sitemap::create();
+        Artist::chunkById(100, function ($artists) use ($sitemap_artists) {
+            foreach ($artists as $artist) {
+                $sitemap_artists->add(
+                    Url::create($artist->getUrl())
+                        ->setLastModificationDate(now())
+                        ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                        ->setPriority(0.7)
+                );
+            }
+        });
+        $sitemap_artists->writeToFile(public_path('sitemap/artists-sitemap.xml'));
+        $this->add_styles('sitemap/artists-sitemap.xml');
+        $sitemap_index->add('sitemap/artists-sitemap.xml');
+
+        // Publishers sitemap
+        $sitemap_publishers = Sitemap::create();
+        Publisher::chunkById(100, function ($publishers) use ($sitemap_publishers) {
+            foreach ($publishers as $publisher) {
+                $sitemap_publishers->add(
+                    Url::create($publisher->getUrl())
+                        ->setLastModificationDate(now())
+                        ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                        ->setPriority(0.7)
+                );
+            }
+        });
+        $sitemap_publishers->writeToFile(public_path('sitemap/publishers-sitemap.xml'));
+        $this->add_styles('sitemap/publishers-sitemap.xml');
+        $sitemap_index->add('sitemap/publishers-sitemap.xml');
+
+        // Manga sitemap
+        $chunk = 0;
+        Manga::chunkById(200, function ($mangas) use ($sitemap_index, &$chunk) {
+            $chunk++;
+            $sitemap_mangas = Sitemap::create();
+            foreach ($mangas as $manga) {
+                $sitemap_mangas->add(
+                    Url::create($manga->getUrl())
+                        ->setLastModificationDate($manga->updated_at)
+                        ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+                        ->setPriority(0.8)
+                );
+            }
+            $sitemap_mangas->writeToFile(public_path("sitemap/manga-sitemap{$chunk}.xml"));
+            $this->add_styles("sitemap/manga-sitemap{$chunk}.xml");
+            $sitemap_index->add("sitemap/manga-sitemap{$chunk}.xml");
+        });
+
+        // Chapters sitemap
+        $chunk = 0;
+        Chapter::with('manga')->chunkById(500, function ($chapters) use ($sitemap_index, &$chunk) {
+            $chunk++;
+            $sitemap_chapters = Sitemap::create();
+            foreach ($chapters as $chapter) {
+                // Only include published chapters
+                if ($chapter->published_at && $chapter->published_at <= now()) {
+                    $sitemap_chapters->add(
+                        Url::create($chapter->getUrl())
+                            ->setLastModificationDate($chapter->updated_at)
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                            ->setPriority(0.6)
+                    );
+                }
+            }
+            if ($sitemap_chapters->getTags()->count() > 0) {
+                $sitemap_chapters->writeToFile(public_path("sitemap/chapters-sitemap{$chunk}.xml"));
+                $this->add_styles("sitemap/chapters-sitemap{$chunk}.xml");
+                $sitemap_index->add("sitemap/chapters-sitemap{$chunk}.xml");
+            }
         });
 
         $sitemap_index->writeToFile(public_path('sitemap.xml'));
         $this->add_styles("sitemap.xml");
 
-        Alert::success("Đã tạo thành công sitemap tại thư mục public")->flash();
+        Alert::success("Đã tạo thành công sitemap cho manga tại thư mục public")->flash();
 
         return back();
     }

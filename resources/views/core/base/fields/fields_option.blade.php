@@ -4,37 +4,36 @@ $value = isset($field) ? old_empty_or_null($field['name'], '') ?? ($field['value
 
 @php
 $progress = [
-    'episodes' => 'Tập mới',
-    'status' => 'Trạng thái phim',
-    'episode_time' => 'Thời lượng tập phim',
-    'episode_current' => 'Số tập phim hiện tại',
-    'episode_total' => 'Tổng số tập phim',
+    'chapters' => 'Chapter mới',
+    'status' => 'Trạng thái manga',
+    'total_chapters' => 'Tổng số chapter',
+    'total_volumes' => 'Tổng số volume',
+    'publication_year' => 'Năm xuất bản',
 ];
 
 $info = [
-    'name' => 'Tên phim',
-    'origin_name' => 'Tên gốc phim',
-    'content' => 'Mô tả nội dung phim',
-    'thumb_url' => 'Ảnh Thumb',
-    'poster_url' => 'Ảnh Poster',
-    'trailer_url' => 'Trailer URL',
-    'quality' => 'Chất lượng phim',
-    'language' => 'Ngôn ngữ',
-    'notify' => 'Nội dung thông báo',
-    'showtimes' => 'Giờ chiếu phim',
-    'publish_year' => 'Năm xuất bản',
-    'is_shown_in_theater' => 'Đánh dấu phim chiếu rạp',
-    'is_copyright' => 'Đánh dấu có bản quyền',
+    'title' => 'Tên manga',
+    'original_title' => 'Tên gốc manga',
+    'description' => 'Mô tả nội dung manga',
+    'cover_image' => 'Ảnh bìa',
+    'banner_image' => 'Ảnh banner',
+    'type' => 'Loại manga',
+    'demographic' => 'Đối tượng độc giả',
+    'reading_direction' => 'Hướng đọc',
+    'rating' => 'Đánh giá',
+    'is_completed' => 'Đánh dấu hoàn thành',
+    'is_recommended' => 'Đánh dấu đề xuất',
+    'is_adult_content' => 'Nội dung người lớn',
 ];
 
 $relations = [
-    'type' => 'Định dạng phim',
-    'actors' => 'Diễn viên',
-    'directors' => 'Đạo diễn',
+    'type' => 'Loại manga',
+    'authors' => 'Tác giả',
+    'artists' => 'Họa sĩ',
     'categories' => 'Thể loại',
-    'regions' => 'Khu vực',
+    'origins' => 'Xuất xứ',
     'tags' => 'Từ khóa',
-    'studios' => 'Studio',
+    'publishers' => 'Nhà xuất bản',
 ];
 @endphp
 
@@ -42,7 +41,7 @@ $relations = [
     <div class="row mb-3">
         <div class="col-12 px-0">
             <input class="checkall" data-target="progress-checkbox" id="progress-all" type="checkbox" checked>
-            <label for="progress-all">Tiến độ phim</label>
+            <label for="progress-all">Tiến độ manga</label>
         </div>
         @foreach ($progress as $key => $option)
             <div class="col-12 col-md-6 form-check checkbox">
@@ -55,7 +54,7 @@ $relations = [
     <div class="row mb-3">
         <div class="col-12 px-0">
             <input class="checkall" data-target="info-checkbox" id="info-all" type="checkbox" checked>
-            <label for="info-all">Thông tin phim</label>
+            <label for="info-all">Thông tin manga</label>
         </div>
         @foreach ($info as $key => $option)
             <div class="col-12 col-md-6 form-check checkbox">

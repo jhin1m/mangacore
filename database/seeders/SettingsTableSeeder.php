@@ -172,30 +172,59 @@ class SettingsTableSeeder extends Seeder
                 EOT,
                 'active'      => 0,
             ],
+            // DEPRECATED: Movie-related settings - Use manga equivalents instead
+            // [
+            //     'key'         => 'site_movie_title',
+            //     'description' => 'site_movie_title',
+            //     'name'        => 'Mẫu tiêu đề trang thông tin phim',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin phim: {name}|{origin_name}|{language}|{quality}|{episode_current}|{publish_year}|...',
+            //         'tab' => 'Phim'
+            //     ]),
+            //     'value' => 'Phim {name}',
+            //     'active'      => 0,
+            // ],
+            // [
+            //     'key'         => 'site_episode_watch_title',
+            //     'description' => 'site_episode_watch_title',
+            //     'name'        => 'Mẫu tiêu đề trang xem phim',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin phim: {movie.name}|{movie.origin_name}|{movie.language}|{movie.quality}|{movie.episode_current}|movie.publish_year}|...<br />Thông tin tập: {name}',
+            //         'tab' => 'Phim'
+            //     ]),
+            //     'value' => 'Xem phim {movie.name} tập {name} {movie.language} {movie.quality}',
+            //     'active'      => 0,
+            // ],
+            
+            // NEW: Manga equivalents for deprecated movie settings
             [
-                'key'         => 'site_movie_title',
-                'description' => 'site_movie_title',
-                'name'        => 'Mẫu tiêu đề trang thông tin phim',
+                'key'         => 'site_manga_title',
+                'description' => 'site_manga_title',
+                'name'        => 'Mẫu tiêu đề trang thông tin manga',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
-                    'hint' => 'Thông tin phim: {name}|{origin_name}|{language}|{quality}|{episode_current}|{publish_year}|...',
-                    'tab' => 'Phim'
+                    'hint' => 'Thông tin manga: {name}|{origin_name}|{status}|{publish_year}|...',
+                    'tab' => 'Manga'
                 ]),
-                'value' => 'Phim {name}',
+                'value' => 'Manga {name}',
                 'active'      => 0,
             ],
             [
-                'key'         => 'site_episode_watch_title',
-                'description' => 'site_episode_watch_title',
-                'name'        => 'Mẫu tiêu đề trang xem phim',
+                'key'         => 'site_chapter_read_title',
+                'description' => 'site_chapter_read_title',
+                'name'        => 'Mẫu tiêu đề trang đọc manga',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
-                    'hint' => 'Thông tin phim: {movie.name}|{movie.origin_name}|{movie.language}|{movie.quality}|{movie.episode_current}|movie.publish_year}|...<br />Thông tin tập: {name}',
-                    'tab' => 'Phim'
+                    'hint' => 'Thông tin manga: {manga.name}|{manga.origin_name}|{manga.status}|{manga.publish_year}|...<br />Thông tin chương: {name}',
+                    'tab' => 'Manga'
                 ]),
-                'value' => 'Xem phim {movie.name} tập {name} {movie.language} {movie.quality}',
+                'value' => 'Đọc manga {manga.name} chương {name}',
                 'active'      => 0,
             ],
             [
@@ -237,160 +266,328 @@ class SettingsTableSeeder extends Seeder
                 'value' => 'Xem phim {name},Phim {name} mới,Phim {name} 2022,phim hay',
                 'active'      => 0,
             ],
+            // DEPRECATED: Region settings - Use origin equivalents instead
+            // [
+            //     'key'         => 'site_region_title',
+            //     'description' => 'site_region_title',
+            //     'name'        => 'Tiêu đề quốc gia mặc định',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin: {name}',
+            //         'tab' => 'Quốc Gia'
+            //     ]),
+            //     'value' => 'Danh sách phim {name} - tổng hợp phim {name}',
+            //     'active'      => 0,
+            // ],
+            // [
+            //     'key'         => 'site_region_des',
+            //     'description' => 'site_region_des',
+            //     'name'        => 'Description quốc gia mặc định',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin: {name}',
+            //         'tab' => 'Quốc Gia'
+            //     ]),
+            //     'value' => 'Phim {name} mới nhất tuyển chọn hay nhất. Top những bộ phim {name} đáng để bạn cày 2022',
+            //     'active'      => 0,
+            // ],
+            // [
+            //     'key'         => 'site_region_key',
+            //     'description' => 'site_region_key',
+            //     'name'        => 'Keywords quốc gia mặc định',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin: {name}',
+            //         'tab' => 'Quốc Gia'
+            //     ]),
+            //     'value' => 'Xem phim {name},Phim {name} mới,Phim {name} 2022,phim hay',
+            //     'active'      => 0,
+            // ],
+            
+            // NEW: Origin equivalents for deprecated region settings
             [
-                'key'         => 'site_region_title',
-                'description' => 'site_region_title',
-                'name'        => 'Tiêu đề quốc gia mặc định',
+                'key'         => 'site_origin_title',
+                'description' => 'site_origin_title',
+                'name'        => 'Tiêu đề xuất xứ mặc định',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
                     'hint' => 'Thông tin: {name}',
-                    'tab' => 'Quốc Gia'
+                    'tab' => 'Xuất Xứ'
                 ]),
-                'value' => 'Danh sách phim {name} - tổng hợp phim {name}',
+                'value' => 'Danh sách manga {name} - tổng hợp manga {name}',
                 'active'      => 0,
             ],
             [
-                'key'         => 'site_region_des',
-                'description' => 'site_region_des',
-                'name'        => 'Description quốc gia mặc định',
+                'key'         => 'site_origin_des',
+                'description' => 'site_origin_des',
+                'name'        => 'Description xuất xứ mặc định',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
                     'hint' => 'Thông tin: {name}',
-                    'tab' => 'Quốc Gia'
+                    'tab' => 'Xuất Xứ'
                 ]),
-                'value' => 'Phim {name} mới nhất tuyển chọn hay nhất. Top những bộ phim {name} đáng để bạn cày 2022',
+                'value' => 'Manga {name} mới nhất tuyển chọn hay nhất. Top những bộ manga {name} đáng để bạn đọc 2024',
                 'active'      => 0,
             ],
             [
-                'key'         => 'site_region_key',
-                'description' => 'site_region_key',
-                'name'        => 'Keywords quốc gia mặc định',
+                'key'         => 'site_origin_key',
+                'description' => 'site_origin_key',
+                'name'        => 'Keywords xuất xứ mặc định',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
                     'hint' => 'Thông tin: {name}',
-                    'tab' => 'Quốc Gia'
+                    'tab' => 'Xuất Xứ'
                 ]),
-                'value' => 'Xem phim {name},Phim {name} mới,Phim {name} 2022,phim hay',
+                'value' => 'Đọc manga {name},Manga {name} mới,Manga {name} 2024,manga hay',
+                'active'      => 0,
+            ],
+            // DEPRECATED: Studio settings - Use publisher equivalents instead
+            // [
+            //     'key'         => 'site_studio_title',
+            //     'description' => 'site_studio_title',
+            //     'name'        => 'Tiêu đề studio',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin: {name}',
+            //         'tab' => 'Studio'
+            //     ]),
+            //     'value' => 'Danh sách phim {name} - tổng hợp phim {name}',
+            //     'active'      => 0,
+            // ],
+            // [
+            //     'key'         => 'site_studio_des',
+            //     'description' => 'site_studio_des',
+            //     'name'        => 'Description studio',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin: {name}',
+            //         'tab' => 'Studio'
+            //     ]),
+            //     'value' => 'Phim {name} mới nhất tuyển chọn hay nhất. Top những bộ phim {name} đáng để bạn cày 2022',
+            //     'active'      => 0,
+            // ],
+            // [
+            //     'key'         => 'site_studio_key',
+            //     'description' => 'site_studio_key',
+            //     'name'        => 'Keywords studio',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin: {name}',
+            //         'tab' => 'Studio'
+            //     ]),
+            //     'value' => 'Xem phim {name},Phim {name} mới,Phim {name} 2022,phim hay',
+            //     'active'      => 0,
+            // ],
+            
+            // NEW: Publisher equivalents for deprecated studio settings
+            [
+                'key'         => 'site_publisher_title',
+                'description' => 'site_publisher_title',
+                'name'        => 'Tiêu đề nhà xuất bản',
+                'field'       => json_encode([
+                    'name' => 'value',
+                    'type' => 'text',
+                    'hint' => 'Thông tin: {name}',
+                    'tab' => 'Nhà Xuất Bản'
+                ]),
+                'value' => 'Danh sách manga {name} - tổng hợp manga {name}',
                 'active'      => 0,
             ],
             [
-                'key'         => 'site_studio_title',
-                'description' => 'site_studio_title',
-                'name'        => 'Tiêu đề studio',
+                'key'         => 'site_publisher_des',
+                'description' => 'site_publisher_des',
+                'name'        => 'Description nhà xuất bản',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
                     'hint' => 'Thông tin: {name}',
-                    'tab' => 'Studio'
+                    'tab' => 'Nhà Xuất Bản'
                 ]),
-                'value' => 'Danh sách phim {name} - tổng hợp phim {name}',
+                'value' => 'Manga {name} mới nhất tuyển chọn hay nhất. Top những bộ manga {name} đáng để bạn đọc 2024',
                 'active'      => 0,
             ],
             [
-                'key'         => 'site_studio_des',
-                'description' => 'site_studio_des',
-                'name'        => 'Description studio',
+                'key'         => 'site_publisher_key',
+                'description' => 'site_publisher_key',
+                'name'        => 'Keywords nhà xuất bản',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
                     'hint' => 'Thông tin: {name}',
-                    'tab' => 'Studio'
+                    'tab' => 'Nhà Xuất Bản'
                 ]),
-                'value' => 'Phim {name} mới nhất tuyển chọn hay nhất. Top những bộ phim {name} đáng để bạn cày 2022',
+                'value' => 'Đọc manga {name},Manga {name} mới,Manga {name} 2024,manga hay',
+                'active'      => 0,
+            ],
+            // DEPRECATED: Actor settings - Use author equivalents instead
+            // [
+            //     'key'         => 'site_actor_title',
+            //     'description' => 'site_actor_title',
+            //     'name'        => 'Tiêu đề diễn viên',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin: {name}',
+            //         'tab' => 'Diễn Viên'
+            //     ]),
+            //     'value' => 'Phim của diễn viên {name} - tổng hợp phim {name} hay nhất',
+            //     'active'      => 0,
+            // ],
+            // [
+            //     'key'         => 'site_actor_des',
+            //     'description' => 'site_actor_des',
+            //     'name'        => 'Description diễn viên',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin: {name}',
+            //         'tab' => 'Diễn Viên'
+            //     ]),
+            //     'value' => 'Phim của diễn viên {name} - tổng hợp phim {name} hay nhất',
+            //     'active'      => 0,
+            // ],
+            // [
+            //     'key'         => 'site_actor_key',
+            //     'description' => 'site_actor_key',
+            //     'name'        => 'Keywords diễn viên',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin: {name}',
+            //         'tab' => 'Diễn Viên'
+            //     ]),
+            //     'value' => 'xem phim {name},phim {name},tuyen tap phim {name}',
+            //     'active'      => 0,
+            // ],
+            
+            // NEW: Author equivalents for deprecated actor settings
+            [
+                'key'         => 'site_author_title',
+                'description' => 'site_author_title',
+                'name'        => 'Tiêu đề tác giả',
+                'field'       => json_encode([
+                    'name' => 'value',
+                    'type' => 'text',
+                    'hint' => 'Thông tin: {name}',
+                    'tab' => 'Tác Giả'
+                ]),
+                'value' => 'Manga của tác giả {name} - tổng hợp manga {name} hay nhất',
                 'active'      => 0,
             ],
             [
-                'key'         => 'site_studio_key',
-                'description' => 'site_studio_key',
-                'name'        => 'Keywords studio',
+                'key'         => 'site_author_des',
+                'description' => 'site_author_des',
+                'name'        => 'Description tác giả',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
                     'hint' => 'Thông tin: {name}',
-                    'tab' => 'Studio'
+                    'tab' => 'Tác Giả'
                 ]),
-                'value' => 'Xem phim {name},Phim {name} mới,Phim {name} 2022,phim hay',
+                'value' => 'Manga của tác giả {name} - tổng hợp manga {name} hay nhất',
                 'active'      => 0,
             ],
             [
-                'key'         => 'site_actor_title',
-                'description' => 'site_actor_title',
-                'name'        => 'Tiêu đề diễn viên',
+                'key'         => 'site_author_key',
+                'description' => 'site_author_key',
+                'name'        => 'Keywords tác giả',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
                     'hint' => 'Thông tin: {name}',
-                    'tab' => 'Diễn Viên'
+                    'tab' => 'Tác Giả'
                 ]),
-                'value' => 'Phim của diễn viên {name} - tổng hợp phim {name} hay nhất',
+                'value' => 'đọc manga {name},manga {name},tuyển tập manga {name}',
+                'active'      => 0,
+            ],
+            // DEPRECATED: Director settings - Use artist equivalents instead
+            // [
+            //     'key'         => 'site_director_title',
+            //     'description' => 'site_director_title',
+            //     'name'        => 'Tiêu đề đạo diễn',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin: {name}',
+            //         'tab' => 'Đạo Diễn'
+            //     ]),
+            //     'value' => 'Phim của đạo diễn {name} - tổng hợp phim {name} hay nhất',
+            //     'active'      => 0,
+            // ],
+            // [
+            //     'key'         => 'site_director_des',
+            //     'description' => 'site_director_des',
+            //     'name'        => 'Description đạo diễn',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin: {name}',
+            //         'tab' => 'Đạo Diễn'
+            //     ]),
+            //     'value' => 'Phim của đạo diễn {name} - tổng hợp phim {name} hay nhất',
+            //     'active'      => 0,
+            // ],
+            // [
+            //     'key'         => 'site_director_key',
+            //     'description' => 'site_director_key',
+            //     'name'        => 'Keywords đạo diễn',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => 'Thông tin: {name}',
+            //         'tab' => 'Đạo Diễn'
+            //     ]),
+            //     'value' => 'xem phim {name},phim {name},tuyen tap phim {name}',
+            //     'active'      => 0,
+            // ],
+            
+            // NEW: Artist equivalents for deprecated director settings
+            [
+                'key'         => 'site_artist_title',
+                'description' => 'site_artist_title',
+                'name'        => 'Tiêu đề họa sĩ',
+                'field'       => json_encode([
+                    'name' => 'value',
+                    'type' => 'text',
+                    'hint' => 'Thông tin: {name}',
+                    'tab' => 'Họa Sĩ'
+                ]),
+                'value' => 'Manga của họa sĩ {name} - tổng hợp manga {name} hay nhất',
                 'active'      => 0,
             ],
             [
-                'key'         => 'site_actor_des',
-                'description' => 'site_actor_des',
-                'name'        => 'Description diễn viên',
+                'key'         => 'site_artist_des',
+                'description' => 'site_artist_des',
+                'name'        => 'Description họa sĩ',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
                     'hint' => 'Thông tin: {name}',
-                    'tab' => 'Diễn Viên'
+                    'tab' => 'Họa Sĩ'
                 ]),
-                'value' => 'Phim của diễn viên {name} - tổng hợp phim {name} hay nhất',
+                'value' => 'Manga của họa sĩ {name} - tổng hợp manga {name} hay nhất',
                 'active'      => 0,
             ],
             [
-                'key'         => 'site_actor_key',
-                'description' => 'site_actor_key',
-                'name'        => 'Keywords diễn viên',
+                'key'         => 'site_artist_key',
+                'description' => 'site_artist_key',
+                'name'        => 'Keywords họa sĩ',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
                     'hint' => 'Thông tin: {name}',
-                    'tab' => 'Diễn Viên'
+                    'tab' => 'Họa Sĩ'
                 ]),
-                'value' => 'xem phim {name},phim {name},tuyen tap phim {name}',
-                'active'      => 0,
-            ],
-            [
-                'key'         => 'site_director_title',
-                'description' => 'site_director_title',
-                'name'        => 'Tiêu đề đạo diễn',
-                'field'       => json_encode([
-                    'name' => 'value',
-                    'type' => 'text',
-                    'hint' => 'Thông tin: {name}',
-                    'tab' => 'Đạo Diễn'
-                ]),
-                'value' => 'Phim của đạo diễn {name} - tổng hợp phim {name} hay nhất',
-                'active'      => 0,
-            ],
-            [
-                'key'         => 'site_director_des',
-                'description' => 'site_director_des',
-                'name'        => 'Description đạo diễn',
-                'field'       => json_encode([
-                    'name' => 'value',
-                    'type' => 'text',
-                    'hint' => 'Thông tin: {name}',
-                    'tab' => 'Đạo Diễn'
-                ]),
-                'value' => 'Phim của đạo diễn {name} - tổng hợp phim {name} hay nhất',
-                'active'      => 0,
-            ],
-            [
-                'key'         => 'site_director_key',
-                'description' => 'site_director_key',
-                'name'        => 'Keywords đạo diễn',
-                'field'       => json_encode([
-                    'name' => 'value',
-                    'type' => 'text',
-                    'hint' => 'Thông tin: {name}',
-                    'tab' => 'Đạo Diễn'
-                ]),
-                'value' => 'xem phim {name},phim {name},tuyen tap phim {name}',
+                'value' => 'đọc manga {name},manga {name},tuyển tập manga {name}',
                 'active'      => 0,
             ],
             [
@@ -432,33 +629,65 @@ class SettingsTableSeeder extends Seeder
                 'value' => 'xem phim {name},phim {name},{name} vietsub',
                 'active'      => 0,
             ],
+            // DEPRECATED: Movie route settings - Use manga equivalents instead
+            // [
+            //     'key'         => 'site_routes_movie',
+            //     'description' => 'site_routes_movie',
+            //     'name'        => 'Trang thông tin phim',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => '<span class="text-danger">{movie}, {id}</span> Buộc phải có ít nhất 1 param',
+            //         'tab' => 'Slug'
+            //     ]),
+            //     'value' => '/phim/{movie}',
+            //     'active'      => 0,
+            // ],
+            // [
+            //     'key'         => 'site_routes_episode',
+            //     'description' => 'site_routes_episode',
+            //     'name'        => 'Trang xem phim',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => <<<EOT
+            //         <span class="text-danger">{movie}, {movie_id}</span> Ít nhất 1<br />
+            //         <span class="text-danger">{episode}, {id}</span> Bắt buộc<br />
+            //         EOT,
+            //         'tab' => 'Slug'
+            //     ]),
+            //     'value' => '/phim/{movie}/{episode}-{id}',
+            //     'active'      => 0,
+            // ],
+            
+            // NEW: Manga route equivalents for deprecated movie routes
             [
-                'key'         => 'site_routes_movie',
-                'description' => 'site_routes_movie',
-                'name'        => 'Trang thông tin phim',
+                'key'         => 'site_routes_manga',
+                'description' => 'site_routes_manga',
+                'name'        => 'Trang thông tin manga',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
-                    'hint' => '<span class="text-danger">{movie}, {id}</span> Buộc phải có ít nhất 1 param',
+                    'hint' => '<span class="text-danger">{manga}, {id}</span> Buộc phải có ít nhất 1 param',
                     'tab' => 'Slug'
                 ]),
-                'value' => '/phim/{movie}',
+                'value' => '/manga/{manga}',
                 'active'      => 0,
             ],
             [
-                'key'         => 'site_routes_episode',
-                'description' => 'site_routes_episode',
-                'name'        => 'Trang xem phim',
+                'key'         => 'site_routes_chapter',
+                'description' => 'site_routes_chapter',
+                'name'        => 'Trang đọc manga',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
                     'hint' => <<<EOT
-                    <span class="text-danger">{movie}, {movie_id}</span> Ít nhất 1<br />
-                    <span class="text-danger">{episode}, {id}</span> Bắt buộc<br />
+                    <span class="text-danger">{manga}, {manga_id}</span> Ít nhất 1<br />
+                    <span class="text-danger">{chapter}, {id}</span> Bắt buộc<br />
                     EOT,
                     'tab' => 'Slug'
                 ]),
-                'value' => '/phim/{movie}/{episode}-{id}',
+                'value' => '/manga/{manga}/{chapter}-{id}',
                 'active'      => 0,
             ],
             [
@@ -476,19 +705,37 @@ class SettingsTableSeeder extends Seeder
                 'value' => '/the-loai/{category}',
                 'active'      => 0,
             ],
+            // DEPRECATED: Region route setting - Use origin equivalent instead
+            // [
+            //     'key'         => 'site_routes_region',
+            //     'description' => 'site_routes_region',
+            //     'name'        => 'Trang quốc gia',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => <<<EOT
+            //         <span class="text-danger">{region}, {id}</span> Ít nhất 1
+            //         EOT,
+            //         'tab' => 'Slug'
+            //     ]),
+            //     'value' => '/quoc-gia/{region}',
+            //     'active'      => 0,
+            // ],
+            
+            // NEW: Origin route equivalent for deprecated region route
             [
-                'key'         => 'site_routes_region',
-                'description' => 'site_routes_region',
-                'name'        => 'Trang quốc gia',
+                'key'         => 'site_routes_origin',
+                'description' => 'site_routes_origin',
+                'name'        => 'Trang xuất xứ',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
                     'hint' => <<<EOT
-                    <span class="text-danger">{region}, {id}</span> Ít nhất 1
+                    <span class="text-danger">{origin}, {id}</span> Ít nhất 1
                     EOT,
                     'tab' => 'Slug'
                 ]),
-                'value' => '/quoc-gia/{region}',
+                'value' => '/xuat-xu/{origin}',
                 'active'      => 0,
             ],
             [
@@ -521,34 +768,67 @@ class SettingsTableSeeder extends Seeder
                 'value' => '/danh-sach/{type}',
                 'active'      => 0,
             ],
+            // DEPRECATED: Actor/Director route settings - Use author/artist equivalents instead
+            // [
+            //     'key'         => 'site_routes_actors',
+            //     'description' => 'site_routes_actors',
+            //     'name'        => 'Trang danh diễn viên',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => <<<EOT
+            //         <span class="text-danger">{actor}, {id}</span> Ít nhất 1
+            //         EOT,
+            //         'tab' => 'Slug'
+            //     ]),
+            //     'value' => '/dien-vien/{actor}',
+            //     'active'      => 0,
+            // ],
+            // [
+            //     'key'         => 'site_routes_directors',
+            //     'description' => 'site_routes_directors',
+            //     'name'        => 'Trang danh đạo diễn',
+            //     'field'       => json_encode([
+            //         'name' => 'value',
+            //         'type' => 'text',
+            //         'hint' => <<<EOT
+            //         <span class="text-danger">{director}, {id}</span> Ít nhất 1
+            //         EOT,
+            //         'tab' => 'Slug'
+            //     ]),
+            //     'value' => '/dao-dien/{director}',
+            //     'active'      => 0,
+            // ],
+            
+            // NEW: Author/Artist route equivalents for deprecated actor/director routes
             [
-                'key'         => 'site_routes_actors',
-                'description' => 'site_routes_actors',
-                'name'        => 'Trang danh diễn viên',
+                'key'         => 'site_routes_authors',
+                'description' => 'site_routes_authors',
+                'name'        => 'Trang danh tác giả',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
                     'hint' => <<<EOT
-                    <span class="text-danger">{actor}, {id}</span> Ít nhất 1
+                    <span class="text-danger">{author}, {id}</span> Ít nhất 1
                     EOT,
                     'tab' => 'Slug'
                 ]),
-                'value' => '/dien-vien/{actor}',
+                'value' => '/tac-gia/{author}',
                 'active'      => 0,
             ],
             [
-                'key'         => 'site_routes_directors',
-                'description' => 'site_routes_directors',
-                'name'        => 'Trang danh đạo diễn',
+                'key'         => 'site_routes_artists',
+                'description' => 'site_routes_artists',
+                'name'        => 'Trang danh họa sĩ',
                 'field'       => json_encode([
                     'name' => 'value',
                     'type' => 'text',
                     'hint' => <<<EOT
-                    <span class="text-danger">{director}, {id}</span> Ít nhất 1
+                    <span class="text-danger">{artist}, {id}</span> Ít nhất 1
                     EOT,
                     'tab' => 'Slug'
                 ]),
-                'value' => '/dao-dien/{director}',
+                'value' => '/hoa-si/{artist}',
                 'active'      => 0,
             ],
         ];
@@ -729,5 +1009,29 @@ class SettingsTableSeeder extends Seeder
         $all_settings = array_merge($generals, $metas, $players, $systems, $others);
         $all_settings = array_map( function( $a ) { return $a['key']; }, $all_settings );
         Setting::whereIn('group', ['generals', 'metas', 'players', 'systems', 'others'])->whereNotIn('key', $all_settings)->delete();
+        
+        // Clean up deprecated movie-related settings that may exist from previous installations
+        $deprecated_keys = [
+            'site_movie_title',
+            'site_episode_watch_title', 
+            'site_region_title',
+            'site_region_des',
+            'site_region_key',
+            'site_studio_title',
+            'site_studio_des', 
+            'site_studio_key',
+            'site_actor_title',
+            'site_actor_des',
+            'site_actor_key',
+            'site_director_title',
+            'site_director_des',
+            'site_director_key',
+            'site_routes_movie',
+            'site_routes_episode',
+            'site_routes_region',
+            'site_routes_actors',
+            'site_routes_directors'
+        ];
+        Setting::whereIn('key', $deprecated_keys)->delete();
     }
 }

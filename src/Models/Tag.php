@@ -66,7 +66,7 @@ class Tag extends Model implements TaxonomyInterface, Cacheable, SeoInterface
         $site_routes = setting('site_routes_tag', '/tu-khoa/{tag}');
         if (strpos($site_routes, '{tag}')) $params['tag'] = $this->slug;
         if (strpos($site_routes, '{id}')) $params['id'] = $this->id;
-        return route('tags.movies.index', $params);
+        return route('tags.manga.index', $params);
     }
 
     protected function titlePattern(): string
@@ -89,13 +89,13 @@ class Tag extends Model implements TaxonomyInterface, Cacheable, SeoInterface
         $seo_title = $this->getTitle();
         $seo_des = Str::limit($this->getDescription(), 150, '...');
         $seo_key = $this->getKeywords();
-        $movie_thumb_url = '';
-        $movie_poster_url = '';
+        $content_thumb_url = '';
+        $content_poster_url = '';
         $updated_at = '';
-        if(count($this->movies)) {
-            $movie_thumb_url = filter_var($this->movies->last()->thumb_url, FILTER_VALIDATE_URL) ? $this->movies->last()->thumb_url : request()->root() . $this->movies->last()->thumb_url;
-            $movie_poster_url = filter_var($this->movies->last()->poster_url, FILTER_VALIDATE_URL) ? $this->movies->last()->poster_url : request()->root() . $this->movies->last()->poster_url;
-            $updated_at = $this->movies->last()->updated_at;
+        if(count($this->mangas)) {
+            $content_thumb_url = filter_var($this->mangas->last()->thumb_url, FILTER_VALIDATE_URL) ? $this->mangas->last()->thumb_url : request()->root() . $this->mangas->last()->thumb_url;
+            $content_poster_url = filter_var($this->mangas->last()->poster_url, FILTER_VALIDATE_URL) ? $this->mangas->last()->poster_url : request()->root() . $this->mangas->last()->poster_url;
+            $updated_at = $this->mangas->last()->updated_at;
         }
         $getUrl = $this->getUrl();
         $site_meta_siteName = setting('site_meta_siteName');
@@ -114,12 +114,12 @@ class Tag extends Model implements TaxonomyInterface, Cacheable, SeoInterface
             ->addProperty('updated_time', $updated_at)
             ->addProperty('url', $getUrl)
             ->setDescription($seo_des)
-            ->addImages([$this->thumb_url, $this->poster_url]);
+            ->addImages([$content_thumb_url, $content_poster_url]);
 
         TwitterCard::setSite($site_meta_siteName)
             ->setTitle($seo_title, false)
             ->setType('summary')
-            ->setImage($movie_thumb_url)
+            ->setImage($content_thumb_url)
             ->setDescription($seo_des)
             ->setUrl($getUrl);
 
@@ -131,7 +131,7 @@ class Tag extends Model implements TaxonomyInterface, Cacheable, SeoInterface
             ->addValue('dateModified', $updated_at)
             ->addValue('datePublished', $updated_at)
             ->setDescription($seo_des)
-            ->setImages([$movie_thumb_url, $movie_poster_url])
+            ->setImages([$content_thumb_url, $content_poster_url])
             ->setUrl($getUrl);
 
         $breadcrumb = [];
@@ -166,9 +166,14 @@ class Tag extends Model implements TaxonomyInterface, Cacheable, SeoInterface
     |--------------------------------------------------------------------------
     */
 
-    public function movies()
+
+
+    /**
+     * Relationship with manga content.
+     */
+    public function mangas()
     {
-        return $this->belongsToMany(Movie::class);
+        return $this->belongsToMany(Manga::class);
     }
 
     /*

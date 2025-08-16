@@ -1,0 +1,561 @@
+/* Manga Reader Styles */
+
+.manga-reader-container {
+    min-height: 100vh;
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+/* Reader Header */
+.reader-header {
+    background-color: #2d2d2d;
+    border-bottom: 1px solid #444;
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.reader-header .manga-title {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.reader-header .manga-title:hover {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.reader-header .chapter-title {
+    color: #cccccc;
+    font-size: 0.9em;
+    margin-left: 10px;
+}
+
+/* Chapter Navigation */
+.chapter-navigation .btn {
+    margin: 0 5px;
+}
+
+.chapter-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.chapter-list .dropdown-item.active {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Reader Controls */
+.reader-controls .btn {
+    margin-left: 5px;
+}
+
+.dropdown-menu {
+    background-color: #2d2d2d;
+    border: 1px solid #444;
+}
+
+.dropdown-item {
+    color: #ffffff;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #444;
+    color: #ffffff;
+}
+
+.dropdown-item.active {
+    background-color: #007bff;
+}
+
+.dropdown-header {
+    color: #cccccc;
+}
+
+/* Reader Content */
+.reader-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 120px);
+    padding: 20px;
+}
+
+/* Single Page Mode */
+.reader-pages.single-page-mode .page-wrapper {
+    display: none;
+    text-align: center;
+}
+
+.reader-pages.single-page-mode .page-wrapper.active {
+    display: block;
+}
+
+.manga-page {
+    max-width: 100%;
+    max-height: 90vh;
+    height: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.manga-page:hover {
+    transform: scale(1.02);
+}
+
+/* Double Page Mode */
+.reader-pages.double-page-mode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.reader-pages.double-page-mode .page-wrapper {
+    display: none;
+    flex: 0 0 auto;
+}
+
+.reader-pages.double-page-mode .page-wrapper.active {
+    display: block;
+}
+
+.double-page-mode .manga-page {
+    max-width: 45vw;
+    max-height: 85vh;
+}
+
+/* Vertical Scroll Mode */
+.reader-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 0;
+}
+
+.vertical-page {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.manga-page-vertical {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Horizontal Swipe Mode */
+.reader-pages.horizontal-mode {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.horizontal-mode .page-wrapper {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    display: block !important;
+}
+
+.horizontal-mode .manga-page {
+    max-height: 85vh;
+    width: auto;
+}
+
+/* Page Numbers */
+.page-number {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    pointer-events: none;
+}
+
+.page-wrapper {
+    position: relative;
+}
+
+/* Reader Footer */
+.reader-footer {
+    background-color: #2d2d2d;
+    border-top: 1px solid #444;
+    padding: 10px 0;
+    position: sticky;
+    bottom: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.page-info {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.page-navigation .btn {
+    margin: 0 5px;
+}
+
+.progress-info {
+    font-size: 0.9em;
+}
+
+/* Progress Bar */
+.page-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.1);
+    z-index: 1001;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #007bff;
+    transition: width 0.3s ease;
+}
+
+/* Loading States */
+.reader-loading,
+.reader-error {
+    color: #ffffff;
+}
+
+.spinner-border {
+    color: #007bff;
+}
+
+/* Fullscreen Mode */
+.reader-fullscreen {
+    overflow: hidden;
+}
+
+.reader-fullscreen .reader-header,
+.reader-fullscreen .reader-footer {
+    position: fixed;
+    width: 100%;
+    z-index: 1002;
+}
+
+.reader-fullscreen .reader-header {
+    top: 0;
+}
+
+.reader-fullscreen .reader-footer {
+    bottom: 0;
+}
+
+.reader-fullscreen .reader-content {
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
+/* UI Hidden State */
+.ui-hidden .reader-header,
+.ui-hidden .reader-footer {
+    transform: translateY(-100%);
+}
+
+.ui-hidden .reader-footer {
+    transform: translateY(100%);
+}
+
+/* Notifications */
+.reader-notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 1003;
+    min-width: 250px;
+    animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Keyboard Shortcuts Modal */
+.modal-content {
+    background-color: #2d2d2d;
+    color: #ffffff;
+}
+
+.modal-header {
+    border-bottom: 1px solid #444;
+}
+
+.modal-body kbd {
+    background-color: #444;
+    color: #ffffff;
+    border: 1px solid #666;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .reader-header .container-fluid,
+    .reader-footer .container-fluid {
+        padding: 0 10px;
+    }
+    
+    .reader-header .row,
+    .reader-footer .row {
+        margin: 0;
+    }
+    
+    .reader-header .col-md-4,
+    .reader-footer .col-md-4 {
+        padding: 5px;
+        text-align: center;
+    }
+    
+    .manga-info,
+    .chapter-navigation,
+    .reader-controls,
+    .page-info,
+    .page-navigation,
+    .progress-info {
+        margin-bottom: 10px;
+    }
+    
+    .chapter-title {
+        display: block;
+        margin-left: 0 !important;
+        margin-top: 5px;
+    }
+    
+    .reader-content {
+        padding: 10px;
+        min-height: calc(100vh - 200px);
+    }
+    
+    .manga-page {
+        max-height: 80vh;
+    }
+    
+    .double-page-mode .manga-page {
+        max-width: 90vw;
+        max-height: 70vh;
+    }
+    
+    .reader-notification {
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .reader-header,
+    .reader-footer {
+        font-size: 0.9em;
+    }
+    
+    .btn-sm {
+        font-size: 0.8em;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .chapter-navigation .btn,
+    .reader-controls .btn,
+    .page-navigation .btn {
+        margin: 2px;
+    }
+    
+    .dropdown-menu {
+        font-size: 0.9em;
+    }
+    
+    /* Stack navigation vertically on very small screens */
+    .reader-header .row,
+    .reader-footer .row {
+        flex-direction: column;
+    }
+    
+    .reader-header .col-md-4,
+    .reader-footer .col-md-4 {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    
+    .reader-header .col-md-4:last-child,
+    .reader-footer .col-md-4:last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .manga-page:hover {
+        transform: none;
+    }
+    
+    .manga-page {
+        cursor: default;
+    }
+    
+    /* Larger touch targets */
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .dropdown-item {
+        padding: 12px 20px;
+    }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .manga-page,
+    .manga-page-vertical {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Dark Mode Adjustments */
+@media (prefers-color-scheme: dark) {
+    .manga-reader-container {
+        background-color: #0d0d0d;
+    }
+    
+    .reader-header,
+    .reader-footer {
+        background-color: #1a1a1a;
+        border-color: #333;
+    }
+    
+    .dropdown-menu {
+        background-color: #1a1a1a;
+        border-color: #333;
+    }
+    
+    .modal-content {
+        background-color: #1a1a1a;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .reader-header,
+    .reader-footer,
+    .page-progress,
+    .reader-notification {
+        display: none !important;
+    }
+    
+    .reader-content {
+        padding: 0;
+        min-height: auto;
+    }
+    
+    .manga-page,
+    .manga-page-vertical {
+        max-width: 100%;
+        max-height: none;
+        box-shadow: none;
+    }
+    
+    .reader-vertical {
+        gap: 0;
+        padding: 0;
+    }
+    
+    .page-wrapper {
+        page-break-inside: avoid;
+        page-break-after: always;
+    }
+    
+    .page-wrapper:last-child {
+        page-break-after: auto;
+    }
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+    .manga-page,
+    .progress-bar,
+    .reader-header,
+    .reader-footer,
+    .reader-notification {
+        transition: none;
+    }
+    
+    .manga-page:hover {
+        transform: none;
+    }
+    
+    @keyframes slideInRight {
+        from, to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+}
+
+/* Focus Styles for Keyboard Navigation */
+.btn:focus,
+.dropdown-item:focus {
+    box-shadow: 0 0 0 2px #007bff;
+    outline: none;
+}
+
+.manga-page:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* Loading Animation */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.manga-page[src=""],
+.manga-page-vertical[src=""] {
+    background-color: #333;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Error State */
+.manga-page.error,
+.manga-page-vertical.error {
+    background-color: #dc3545;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 48px 48px;
+    min-height: 200px;
+}

@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Ophim\Core\Models\Category;
 use Ophim\Core\Models\Menu;
-use Ophim\Core\Models\Region;
+use Ophim\Core\Models\Origin;
 use Ophim\Core\Models\Catalog;
 use Ophim\Core\Models\Theme;
 
@@ -33,15 +33,16 @@ class MenusTableSeeder extends Seeder
             ]);
         }
 
-        $regionGroup = Menu::firstOrCreate(['name' => 'Quốc gia', 'link' => '#', 'type' => 'internal_link']);
-        $regions = Region::all();
-        foreach ($regions as $region) {
+        // Legacy region menu - replaced with origin menu for manga system
+        $originGroup = Menu::firstOrCreate(['name' => 'Xuất xứ', 'link' => '#', 'type' => 'internal_link']);
+        $origins = Origin::all();
+        foreach ($origins as $origin) {
             Menu::updateOrCreate([
-                'name' => $region->name,
+                'name' => $origin->name,
             ], [
-                'link' => $region->getUrl(false),
+                'link' => $origin->getUrl(false),
                 'type' => 'internal_link',
-                'parent_id' => $regionGroup->id
+                'parent_id' => $originGroup->id
             ]);
         }
     }

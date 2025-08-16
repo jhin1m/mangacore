@@ -6,12 +6,9 @@ use Backpack\Settings\app\Models\Setting;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Ophim\Core\Database\Seeders\CatalogsTableSeeder;
-use Ophim\Core\Database\Seeders\CategoriesTableSeeder;
 use Ophim\Core\Database\Seeders\MenusTableSeeder;
 use Ophim\Core\Database\Seeders\PermissionsSeeder;
-use Ophim\Core\Database\Seeders\RegionsTableSeeder;
 use Ophim\Core\Database\Seeders\SettingsTableSeeder;
-use Ophim\Core\Database\Seeders\ThemesTableSeeder;
 
 class InstallCommand extends Command
 {
