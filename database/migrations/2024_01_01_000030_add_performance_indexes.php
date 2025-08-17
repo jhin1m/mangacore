@@ -47,15 +47,15 @@ class AddPerformanceIndexes extends Migration
         });
 
         // Add indexes to pivot tables for better relationship queries
-        Schema::table('manga_author', function (Blueprint $table) {
+        Schema::table('author_manga', function (Blueprint $table) {
             $table->index(['author_id', 'manga_id'], 'idx_manga_author_lookup');
         });
 
-        Schema::table('manga_artist', function (Blueprint $table) {
+        Schema::table('artist_manga', function (Blueprint $table) {
             $table->index(['artist_id', 'manga_id'], 'idx_manga_artist_lookup');
         });
 
-        Schema::table('manga_category', function (Blueprint $table) {
+        Schema::table('category_manga', function (Blueprint $table) {
             $table->index(['category_id', 'manga_id'], 'idx_manga_category_lookup');
         });
 
@@ -117,15 +117,15 @@ class AddPerformanceIndexes extends Migration
             $table->dropIndex('idx_progress_user_completed');
         });
 
-        Schema::table('manga_author', function (Blueprint $table) {
+        Schema::table('author_manga', function (Blueprint $table) {
             $table->dropIndex('idx_manga_author_lookup');
         });
 
-        Schema::table('manga_artist', function (Blueprint $table) {
+        Schema::table('artist_manga', function (Blueprint $table) {
             $table->dropIndex('idx_manga_artist_lookup');
         });
 
-        Schema::table('manga_category', function (Blueprint $table) {
+        Schema::table('category_manga', function (Blueprint $table) {
             $table->dropIndex('idx_manga_category_lookup');
         });
 
