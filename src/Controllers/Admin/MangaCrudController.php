@@ -317,9 +317,9 @@ class MangaCrudController extends CrudController
             'class' => 'form-group col-md-4'
         ], 'attributes' => ['min' => 0, 'placeholder' => 'Để trống nếu không có'], 'tab' => 'Thông tin xuất bản']);
 
-        CRUD::addField(['name' => 'rating', 'label' => 'Đánh giá', 'type' => 'number', 'attributes' => ['step' => '0.1', 'min' => 0, 'max' => 10], 'wrapperAttributes' => [
+        CRUD::addField(['name' => 'rating', 'label' => 'Đánh giá', 'type' => 'number', 'attributes' => ['step' => '0.1', 'min' => 0, 'max' => 10, 'placeholder' => '0'], 'default' => 0, 'wrapperAttributes' => [
             'class' => 'form-group col-md-6'
-        ], 'tab' => 'Thông tin xuất bản']);
+        ], 'hint' => 'Để trống hoặc 0 nếu chưa có đánh giá', 'tab' => 'Thông tin xuất bản']);
 
         // Classification Tab
         CRUD::addField(['name' => 'type', 'label' => 'Loại manga', 'type' => 'radio', 'options' => [
@@ -389,6 +389,7 @@ class MangaCrudController extends CrudController
     public function store(Request $request)
     {
         $this->getTaxonomies($request);
+        $this->handleRatingField($request);
 
         return $this->backpackStore();
     }
@@ -396,8 +397,20 @@ class MangaCrudController extends CrudController
     public function update(Request $request)
     {
         $this->getTaxonomies($request);
+        $this->handleRatingField($request);
 
         return $this->backpackUpdate();
+    }
+
+    /**
+     * Handle rating field to ensure it's never null
+     */
+    protected function handleRatingField(Request $request)
+    {
+        // If rating is empty or null, set it to 0
+        if (empty($request->input('rating')) || $request->input('rating') === null) {
+            $request->merge(['rating' => 0]);
+        }
     }
 
     protected function getTaxonomies(Request $request)

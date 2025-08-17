@@ -49,9 +49,8 @@ class ChapterCrudController extends CrudController
         CRUD::setEntityNameStrings('Chapter', 'chapters');
         
         // Add custom buttons
-        $this->crud->addButtonFromModelFunction('line', 'open_chapter', 'openChapter', 'beginning');
-        $this->crud->addButtonFromView('line', 'manage_pages', 'manage_pages', 'end');
-        $this->crud->addButtonFromView('top', 'batch_upload', 'batch_upload', 'end');
+        $this->crud->addButtonFromView('line', 'chapter_actions', 'ophim::crud.buttons.chapter_actions', 'end');
+        $this->crud->addButtonFromView('top', 'batch_upload', 'ophim::crud.buttons.batch_upload', 'end');
     }
 
     /**
@@ -72,7 +71,7 @@ class ChapterCrudController extends CrudController
 
         $this->crud->enableExportButtons();
 
-        // Add filters
+        // Add filters (temporarily simplified to avoid view issues)
         $this->crud->addFilter([
             'name' => 'manga_id',
             'type' => 'select2',
@@ -83,6 +82,9 @@ class ChapterCrudController extends CrudController
             $this->crud->addClause('where', 'manga_id', $value);
         });
 
+        // Temporarily disable dropdown and date_range filters until views are published
+        // Uncomment after running: php artisan vendor:publish --tag=cms_menu_content
+        /*
         $this->crud->addFilter([
             'name' => 'is_premium',
             'type' => 'dropdown',
@@ -95,22 +97,15 @@ class ChapterCrudController extends CrudController
         });
 
         $this->crud->addFilter([
-            'name' => 'published_status',
-            'type' => 'dropdown', 
-            'label' => 'Published Status'
-        ], [
-            'published' => 'Published',
-            'scheduled' => 'Scheduled',
-            'draft' => 'Draft'
-        ], function ($value) {
-            if ($value === 'published') {
-                $this->crud->addClause('where', 'published_at', '<=', now());
-            } elseif ($value === 'scheduled') {
-                $this->crud->addClause('where', 'published_at', '>', now());
-            } elseif ($value === 'draft') {
-                $this->crud->addClause('whereNull', 'published_at');
-            }
+            'name' => 'published_at',
+            'type' => 'date_range',
+            'label' => 'Published Date'
+        ], false, function ($value) {
+            $dates = json_decode($value);
+            $this->crud->addClause('where', 'published_at', '>=', $dates->from);
+            $this->crud->addClause('where', 'published_at', '<=', $dates->to . ' 23:59:59');
         });
+        */
 
         // Columns
         CRUD::addColumn([
@@ -186,10 +181,7 @@ class ChapterCrudController extends CrudController
         CRUD::addField([
             'name' => 'manga_id',
             'label' => 'Manga',
-            'type' => 'select2',
-            'entity' => 'manga',
-            'model' => Manga::class,
-            'attribute' => 'title',
+            'type' => 'select_manga',
             'tab' => 'Basic Info'
         ]);
 
@@ -197,7 +189,10 @@ class ChapterCrudController extends CrudController
             'name' => 'chapter_number',
             'label' => 'Chapter Number',
             'type' => 'number',
-            'attributes' => ['step' => '0.1', 'min' => '0'],
+            'attributes' => [
+                'step' => '0.1',
+                'min' => '0'
+            ],
             'tab' => 'Basic Info'
         ]);
 
@@ -205,35 +200,32 @@ class ChapterCrudController extends CrudController
             'name' => 'title',
             'label' => 'Chapter Title',
             'type' => 'text',
-            'hint' => 'Optional. Leave empty to use default "Chapter X" format.',
+            'hint' => 'Leave empty for auto-generated title',
             'tab' => 'Basic Info'
         ]);
 
         CRUD::addField([
             'name' => 'volume_id',
             'label' => 'Volume',
-            'type' => 'select2',
+            'type' => 'select2_from_ajax',
             'entity' => 'volume',
-            'model' => 'Ophim\Core\Models\Volume',
             'attribute' => 'title',
+            'data_source' => url('admin/chapter/ajax-volume-options'),
+            'placeholder' => 'Select volume (optional)',
+            'minimum_input_length' => 0,
             'dependencies' => ['manga_id'],
-            'tab' => 'Basic Info'
-        ]);
-
-        CRUD::addField([
-            'name' => 'volume_number',
-            'label' => 'Volume Number',
-            'type' => 'number',
-            'attributes' => ['min' => '1'],
             'tab' => 'Basic Info'
         ]);
 
         // Publishing Tab
         CRUD::addField([
             'name' => 'published_at',
-            'label' => 'Publish Date & Time',
+            'label' => 'Publish Date',
             'type' => 'datetime_picker',
-            'hint' => 'Leave empty to save as draft. Set future date to schedule publishing.',
+            'datetime_picker_options' => [
+                'format' => 'YYYY-MM-DD HH:mm:ss',
+                'language' => 'en'
+            ],
             'tab' => 'Publishing'
         ]);
 
@@ -251,7 +243,7 @@ class ChapterCrudController extends CrudController
             'type' => 'upload_multiple',
             'upload' => true,
             'disk' => 'public',
-            'hint' => 'Upload individual page images or use batch upload for ZIP files.',
+            'hint' => 'Upload individual page images',
             'tab' => 'Pages'
         ]);
 
@@ -261,7 +253,19 @@ class ChapterCrudController extends CrudController
             'type' => 'upload',
             'upload' => true,
             'disk' => 'public',
-            'hint' => 'Upload a ZIP file containing all chapter pages. Images will be extracted and ordered automatically.',
+            'hint' => 'Upload a ZIP file containing all chapter pages',
+            'tab' => 'Pages'
+        ]);
+
+        // Add custom CSS/JS for enhanced functionality
+        CRUD::addField([
+            'name' => 'pages_manager',
+            'type' => 'custom_html',
+            'value' => '<div id="pages-manager" style="display:none;">
+                <h5>Page Management</h5>
+                <div id="pages-list"></div>
+                <button type="button" class="btn btn-success" id="add-page-btn">Add Page</button>
+            </div>',
             'tab' => 'Pages'
         ]);
     }
@@ -277,15 +281,6 @@ class ChapterCrudController extends CrudController
         $this->authorize('update', $this->crud->getEntryWithLocale($this->crud->getCurrentEntryId()));
 
         $this->setupCreateOperation();
-
-        // Add page management field for existing chapters
-        CRUD::addField([
-            'name' => 'existing_pages',
-            'label' => 'Current Pages',
-            'type' => 'view',
-            'view' => 'ophim::admin.chapters.pages_manager',
-            'tab' => 'Pages'
-        ]);
     }
 
     /**
@@ -648,6 +643,90 @@ class ChapterCrudController extends CrudController
             'optimized_count' => $optimizedCount,
             'total_pages' => $chapter->pages->count()
         ]);
+    }
+
+    /**
+     * AJAX endpoint for volume options based on selected manga
+     */
+    public function ajaxVolumeOptions(Request $request)
+    {
+        $mangaId = $request->get('manga_id');
+        
+        if (!$mangaId) {
+            return response()->json([]);
+        }
+        
+        $volumes = \Ophim\Core\Models\Volume::where('manga_id', $mangaId)
+            ->orderBy('volume_number')
+            ->get(['id', 'volume_number', 'title']);
+        
+        return response()->json($volumes->map(function ($volume) {
+            return [
+                'id' => $volume->id,
+                'text' => "Volume {$volume->volume_number}" . ($volume->title ? ": {$volume->title}" : '')
+            ];
+        }));
+    }
+
+    /**
+     * Pages manager view for editing chapters
+     */
+    public function pagesManager($id)
+    {
+        $chapter = Chapter::with(['pages' => function($query) {
+            $query->orderBy('page_number');
+        }])->findOrFail($id);
+        
+        $this->authorize('update', $chapter);
+        
+        return view('ophim::chapters.pages_manager', compact('chapter'));
+    }
+
+    /**
+     * Upload pages to existing chapter
+     */
+    public function uploadPages(Request $request, $id)
+    {
+        $chapter = Chapter::findOrFail($id);
+        $this->authorize('update', $chapter);
+        
+        $this->handlePageUploads($chapter, $request);
+        $this->updateChapterPageCount($chapter);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Pages uploaded successfully',
+            'page_count' => $chapter->page_count
+        ]);
+    }
+
+    /**
+     * Duplicate chapter
+     */
+    public function duplicate($id)
+    {
+        $originalChapter = Chapter::with('pages')->findOrFail($id);
+        $this->authorize('create', Chapter::class);
+        
+        // Create new chapter
+        $newChapter = $originalChapter->replicate();
+        $newChapter->chapter_number = $originalChapter->chapter_number + 0.1; // Increment by 0.1
+        $newChapter->title = $originalChapter->title . ' (Copy)';
+        $newChapter->published_at = null;
+        $newChapter->save();
+        
+        // Copy pages
+        foreach ($originalChapter->pages as $page) {
+            $newPage = $page->replicate();
+            $newPage->chapter_id = $newChapter->id;
+            $newPage->save();
+        }
+        
+        $this->updateChapterPageCount($newChapter);
+        
+        \Alert::success("Chapter duplicated successfully!")->flash();
+        
+        return redirect()->to($this->crud->route);
     }
 
     /**

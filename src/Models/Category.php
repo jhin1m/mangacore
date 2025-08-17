@@ -174,7 +174,7 @@ class Category extends Model implements TaxonomyInterface, Cacheable, SeoInterfa
      */
     public function mangas()
     {
-        return $this->belongsToMany(Manga::class);
+        return $this->belongsToMany(Manga::class, 'category_manga');
     }
 
     /*

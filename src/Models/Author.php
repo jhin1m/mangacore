@@ -162,7 +162,7 @@ class Author extends Model implements TaxonomyInterface, Cacheable, SeoInterface
 
     public function manga()
     {
-        return $this->belongsToMany(Manga::class);
+        return $this->belongsToMany(Manga::class, 'author_manga');
     }
 
     /*

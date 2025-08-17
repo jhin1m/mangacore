@@ -48,6 +48,10 @@ Route::group([
     Route::delete('chapter/delete-page/{pageId}', 'ChapterCrudController@deletePage');
     Route::post('chapter/optimize-images/{chapterId}', 'ChapterCrudController@optimizeImages');
     Route::post('chapter/schedule-publishing', 'ChapterCrudController@schedulePublishing');
+    Route::get('chapter/ajax-volume-options', 'ChapterCrudController@ajaxVolumeOptions');
+    Route::get('chapter/{id}/pages-manager', 'ChapterCrudController@pagesManager');
+    Route::post('chapter/{id}/upload-pages', 'ChapterCrudController@uploadPages');
+    Route::post('chapter/{id}/duplicate', 'ChapterCrudController@duplicate');
     
     Route::crud('theme', 'ThemeManagementController');
     Route::crud('sitemap', 'SiteMapController');

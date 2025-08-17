@@ -173,7 +173,7 @@ class Tag extends Model implements TaxonomyInterface, Cacheable, SeoInterface
      */
     public function mangas()
     {
-        return $this->belongsToMany(Manga::class);
+        return $this->belongsToMany(Manga::class, 'manga_tag');
     }
 
     /*

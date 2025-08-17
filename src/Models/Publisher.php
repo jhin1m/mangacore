@@ -116,7 +116,7 @@ class Publisher extends Model implements TaxonomyInterface, Cacheable, SeoInterf
 
     public function manga()
     {
-        return $this->belongsToMany(Manga::class);
+        return $this->belongsToMany(Manga::class, 'manga_publisher');
     }
 
     /*

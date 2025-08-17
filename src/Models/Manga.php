@@ -60,6 +60,22 @@ class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
         'is_adult_content' => 'boolean',
     ];
 
+    protected $attributes = [
+        'rating' => 0,
+        'rating_count' => 0,
+        'view_count' => 0,
+        'view_day' => 0,
+        'view_week' => 0,
+        'view_month' => 0,
+        'is_completed' => false,
+        'is_recommended' => false,
+        'is_adult_content' => false,
+        'type' => 'manga',
+        'status' => 'ongoing',
+        'demographic' => 'general',
+        'reading_direction' => 'ltr',
+    ];
+
     // Constants for validation
     const TYPES = ['manga', 'manhwa', 'manhua', 'webtoon'];
     const STATUSES = ['ongoing', 'completed', 'hiatus', 'cancelled'];
@@ -76,8 +92,20 @@ class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
     {
         parent::boot();
 
+        static::creating(function ($instance) {
+            // Ensure rating is never null
+            if ($instance->rating === null) {
+                $instance->rating = 0;
+            }
+        });
+
         static::updating(function ($instance) {
             $instance->timestamps = request('timestamps') ?: false;
+            
+            // Ensure rating is never null
+            if ($instance->rating === null) {
+                $instance->rating = 0;
+            }
         });
 
         // Invalidate caches when manga is updated or deleted
@@ -313,12 +341,12 @@ class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
 
     public function authors()
     {
-        return $this->belongsToMany(Author::class, 'manga_author');
+        return $this->belongsToMany(Author::class, 'author_manga');
     }
 
     public function artists()
     {
-        return $this->belongsToMany(Artist::class, 'manga_artist');
+        return $this->belongsToMany(Artist::class, 'artist_manga');
     }
 
     public function publishers()
@@ -328,7 +356,7 @@ class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'manga_category');
+        return $this->belongsToMany(Category::class, 'category_manga');
     }
 
     public function tags()
@@ -467,6 +495,14 @@ class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
     public function getOtherNameAttribute($value)
     {
         return $value ? explode(', ', $value) : [];
+    }
+
+    /**
+     * Ensure rating is never null
+     */
+    public function setRatingAttribute($value)
+    {
+        $this->attributes['rating'] = $value === null || $value === '' ? 0 : $value;
     }
 
     /*
