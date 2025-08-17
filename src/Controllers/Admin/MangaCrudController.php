@@ -283,7 +283,7 @@ class MangaCrudController extends CrudController
         
         CRUD::addField(['name' => 'slug', 'label' => 'Đường dẫn tĩnh', 'type' => 'text', 'tab' => 'Thông tin cơ bản']);
         
-        CRUD::addField(['name' => 'other_name', 'label' => 'Tên khác', 'type' => 'text', 'attributes' => ['placeholder' => 'Các tên khác, cách nhau bởi dấu phẩy'], 'tab' => 'Thông tin cơ bản']);
+        CRUD::addField(['name' => 'other_name', 'label' => 'Tên khác', 'type' => 'mixed_data_text', 'attributes' => ['placeholder' => 'Các tên khác, cách nhau bởi dấu phẩy'], 'tab' => 'Thông tin cơ bản']);
 
         // Image uploads
         CRUD::addField([
@@ -390,6 +390,7 @@ class MangaCrudController extends CrudController
     {
         $this->getTaxonomies($request);
         $this->handleRatingField($request);
+        $this->sanitizeFieldData($request);
 
         return $this->backpackStore();
     }
@@ -398,6 +399,7 @@ class MangaCrudController extends CrudController
     {
         $this->getTaxonomies($request);
         $this->handleRatingField($request);
+        $this->sanitizeFieldData($request);
 
         return $this->backpackUpdate();
     }
@@ -410,6 +412,23 @@ class MangaCrudController extends CrudController
         // If rating is empty or null, set it to 0
         if (empty($request->input('rating')) || $request->input('rating') === null) {
             $request->merge(['rating' => 0]);
+        }
+    }
+
+    /**
+     * Sanitize field data to handle array-to-string conversions
+     */
+    protected function sanitizeFieldData(Request $request)
+    {
+        $fieldsToSanitize = ['other_name', 'description'];
+        
+        foreach ($fieldsToSanitize as $field) {
+            $value = $request->input($field);
+            
+            // Convert arrays to strings for text fields
+            if (is_array($value)) {
+                $request->merge([$field => implode(', ', array_filter($value))]);
+            }
         }
     }
 

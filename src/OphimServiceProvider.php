@@ -113,6 +113,9 @@ class OphimServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../resources/views/core/', 'ophim');
 
         $this->loadViewsFrom(__DIR__ . '/../resources/views/themes', 'themes');
+        
+        // Register field view namespace for CRUD operations
+        $this->registerFieldViewNamespaces();
 
         $this->publishFiles();
 
@@ -297,5 +300,21 @@ class OphimServiceProvider extends ServiceProvider
                 DB::table('mangas')->update(['view_month' => 0]);
             }
         })->monthly();
+    }
+
+    /**
+     * Register field view namespaces for CRUD operations
+     */
+    protected function registerFieldViewNamespaces()
+    {
+        // Extend the CRUD field view namespaces to include our custom fields
+        $existingNamespaces = config('backpack.crud.view_namespaces.fields', []);
+        
+        // Add our namespace at the beginning so it takes priority
+        $customNamespaces = array_merge([
+            'ophim::base.fields', // Our custom field views
+        ], $existingNamespaces);
+        
+        config(['backpack.crud.view_namespaces.fields' => $customNamespaces]);
     }
 }

@@ -39,10 +39,21 @@
                 @endif
             </div>
             
-            @if($entry->other_name && is_array($entry->other_name) && count($entry->other_name) > 0)
+            @php
+                // Defensive type checking for other_name field
+                $otherNames = $entry->other_name;
+                if (is_string($otherNames) && !empty($otherNames)) {
+                    $otherNames = explode(', ', $otherNames);
+                } elseif (!is_array($otherNames)) {
+                    $otherNames = [];
+                }
+                $otherNames = array_filter($otherNames); // Remove empty values
+            @endphp
+            
+            @if(!empty($otherNames))
                 <div class="small text-muted">
-                    <strong>Tên khác:</strong> {{ implode(', ', array_slice($entry->other_name, 0, 2)) }}
-                    @if(count($entry->other_name) > 2)
+                    <strong>Tên khác:</strong> {{ implode(', ', array_slice($otherNames, 0, 2)) }}
+                    @if(count($otherNames) > 2)
                         <span class="text-muted">...</span>
                     @endif
                 </div>

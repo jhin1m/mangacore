@@ -36,6 +36,7 @@ class ChapterCrudController extends CrudController
     use \Ophim\Core\Traits\Operations\BulkDeleteOperation {
         bulkDelete as traitBulkDelete;
     }
+    use \Ophim\Core\Traits\Operations\FieldViewFallback;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -176,13 +177,17 @@ class ChapterCrudController extends CrudController
         $this->authorize('create', Chapter::class);
 
         CRUD::setValidation(ChapterRequest::class);
+        
+        // Setup field view fallbacks
+        $this->setupFieldViewFallbacks();
 
-        // Basic Information Tab
-        CRUD::addField([
+        // Basic Information Tab - using fallback-aware field addition
+        $this->addFieldWithFallback([
             'name' => 'manga_id',
             'label' => 'Manga',
             'type' => 'select_manga',
-            'tab' => 'Basic Info'
+            'tab' => 'Basic Info',
+            'hint' => 'Select the manga this chapter belongs to'
         ]);
 
         CRUD::addField([

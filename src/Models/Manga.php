@@ -18,6 +18,7 @@ use Ophim\Core\Contracts\SeoInterface;
 use Ophim\Core\Traits\ActorLog;
 use Ophim\Core\Traits\HasFactory;
 use Ophim\Core\Traits\HasTitle;
+use Ophim\Core\Traits\HandlesDataTypes;
 use Ophim\Core\Traits\Sluggable;
 
 class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
@@ -28,6 +29,7 @@ class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
     use HasFactory;
     use HasCache;
     use HasTitle;
+    use HandlesDataTypes;
 
     /*
     |--------------------------------------------------------------------------
@@ -97,6 +99,9 @@ class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
             if ($instance->rating === null) {
                 $instance->rating = 0;
             }
+            
+            // Validate and sanitize data types before creating
+            $instance->validateDataTypes();
         });
 
         static::updating(function ($instance) {
@@ -106,6 +111,9 @@ class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
             if ($instance->rating === null) {
                 $instance->rating = 0;
             }
+            
+            // Validate and sanitize data types before updating
+            $instance->validateDataTypes();
         });
 
         // Invalidate caches when manga is updated or deleted
@@ -116,6 +124,71 @@ class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
         static::deleted(function ($instance) {
             $instance->invalidateCache();
         });
+    }
+
+    /**
+     * Detect if we're in a CRUD context (admin interface)
+     *
+     * @return bool
+     */
+    protected function isInCrudContext(): bool
+    {
+        // Check if we're in admin routes or CRUD operations
+        if (request() && request()->is('admin/*')) {
+            return true;
+        }
+        
+        // Check if we're being accessed from CRUD controller
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
+        foreach ($backtrace as $trace) {
+            if (isset($trace['class']) && 
+                (strpos($trace['class'], 'CrudController') !== false ||
+                 strpos($trace['class'], 'CrudPanel') !== false ||
+                 strpos($trace['function'], 'crud') !== false)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    /**
+     * Validate and ensure data type consistency
+     *
+     * @return void
+     */
+    protected function validateDataTypes(): void
+    {
+        // Ensure text fields are properly converted from arrays
+        $textFields = ['title', 'original_title', 'other_name', 'description'];
+        
+        foreach ($textFields as $field) {
+            if (isset($this->attributes[$field])) {
+                $this->attributes[$field] = $this->safeToString($this->attributes[$field]);
+            }
+        }
+        
+        // Ensure numeric fields are properly typed
+        $numericFields = ['publication_year', 'total_chapters', 'total_volumes', 'rating', 'rating_count'];
+        
+        foreach ($numericFields as $field) {
+            if (isset($this->attributes[$field]) && $this->attributes[$field] !== null) {
+                if ($field === 'rating') {
+                    $this->attributes[$field] = (float) $this->attributes[$field];
+                } else {
+                    $this->attributes[$field] = (int) $this->attributes[$field];
+                }
+            }
+        }
+        
+        // Ensure boolean fields are properly typed
+        $booleanFields = ['is_completed', 'is_recommended', 'is_adult_content'];
+        
+        foreach ($booleanFields as $field) {
+            if (isset($this->attributes[$field])) {
+                $this->attributes[$field] = (bool) $this->attributes[$field];
+            }
+        }
     }
 
     public static function primaryCacheKey(): string
@@ -489,12 +562,42 @@ class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
 
     public function setOtherNameAttribute($value)
     {
-        $this->attributes['other_name'] = is_array($value) ? implode(', ', $value) : $value;
+        $this->attributes['other_name'] = $this->safeToString($value);
     }
 
     public function getOtherNameAttribute($value)
     {
-        return $value ? explode(', ', $value) : [];
+        // For CRUD operations, return string to prevent array-to-string conversion errors
+        if ($this->isInCrudContext()) {
+            return $this->safeToString($value);
+        }
+        
+        // For programmatic access, return array
+        return $this->safeToArray($value);
+    }
+
+    /**
+     * Get other_name as string for display purposes
+     */
+    public function getOtherNameStringAttribute()
+    {
+        return $this->safeToString($this->attributes['other_name'] ?? '');
+    }
+
+    /**
+     * Get other_name for form display (handles both array and string gracefully)
+     */
+    public function getOtherNameForFormAttribute()
+    {
+        return $this->sanitizeFieldValue($this->attributes['other_name'] ?? '', false);
+    }
+
+    /**
+     * Get other_name as array for programmatic access
+     */
+    public function getOtherNameArrayAttribute()
+    {
+        return $this->safeToArray($this->attributes['other_name'] ?? '');
     }
 
     /**
@@ -503,6 +606,45 @@ class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
     public function setRatingAttribute($value)
     {
         $this->attributes['rating'] = $value === null || $value === '' ? 0 : $value;
+    }
+
+    /**
+     * Handle description field with consistent type conversion
+     */
+    public function setDescriptionAttribute($value)
+    {
+        $this->attributes['description'] = $this->safeToString($value);
+    }
+
+    public function getDescriptionAttribute($value)
+    {
+        return $this->sanitizeFieldValue($value ?? '', false);
+    }
+
+    /**
+     * Handle title field with consistent type conversion
+     */
+    public function setTitleAttribute($value)
+    {
+        $this->attributes['title'] = $this->safeToString($value);
+    }
+
+    public function getTitleAttribute($value)
+    {
+        return $this->sanitizeFieldValue($value ?? '', false);
+    }
+
+    /**
+     * Handle original_title field with consistent type conversion
+     */
+    public function setOriginalTitleAttribute($value)
+    {
+        $this->attributes['original_title'] = $this->safeToString($value);
+    }
+
+    public function getOriginalTitleAttribute($value)
+    {
+        return $this->sanitizeFieldValue($value ?? '', false);
     }
 
     /*
@@ -785,5 +927,99 @@ class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
                 'rating_count' => $userCount
             ]);
         }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DATA TYPE HANDLING METHODS
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Get field value prepared for CRUD operations
+     *
+     * @param string $field
+     * @param string $fieldType
+     * @return mixed
+     */
+    public function getFieldForCrud($field, $fieldType = 'text')
+    {
+        $value = $this->attributes[$field] ?? null;
+        return $this->prepareForCrudField($value, $fieldType);
+    }
+
+    /**
+     * Set field value with proper type conversion
+     *
+     * @param string $field
+     * @param mixed $value
+     * @param string $expectedType
+     * @return void
+     */
+    public function setFieldWithTypeValidation($field, $value, $expectedType = 'string')
+    {
+        $this->attributes[$field] = $this->validateAndConvertType($value, $expectedType);
+    }
+
+    /**
+     * Get all text fields as safe strings for display
+     *
+     * @return array
+     */
+    public function getTextFieldsForDisplay(): array
+    {
+        $textFields = ['title', 'original_title', 'other_name', 'description'];
+        $result = [];
+        
+        foreach ($textFields as $field) {
+            $result[$field] = $this->sanitizeFieldValue($this->attributes[$field] ?? '', false);
+        }
+        
+        return $result;
+    }
+
+    /**
+     * Validate all model data before save operations
+     *
+     * @return array Array of validation errors, empty if valid
+     */
+    public function validateModelData(): array
+    {
+        $errors = [];
+        
+        // Validate required text fields
+        $requiredFields = ['title'];
+        foreach ($requiredFields as $field) {
+            $value = $this->safeToString($this->attributes[$field] ?? '');
+            if (empty($value)) {
+                $errors[$field] = "Field {$field} is required";
+            }
+        }
+        
+        // Validate numeric fields
+        if (isset($this->attributes['publication_year']) && 
+            !is_numeric($this->attributes['publication_year'])) {
+            $errors['publication_year'] = 'Publication year must be numeric';
+        }
+        
+        if (isset($this->attributes['rating']) && 
+            (!is_numeric($this->attributes['rating']) || 
+             $this->attributes['rating'] < 0 || 
+             $this->attributes['rating'] > 10)) {
+            $errors['rating'] = 'Rating must be between 0 and 10';
+        }
+        
+        // Validate enum fields
+        if (isset($this->attributes['type']) && 
+            !in_array($this->attributes['type'], self::TYPES)) {
+            $errors['type'] = 'Invalid manga type';
+        }
+        
+        if (isset($this->attributes['status']) && 
+            !in_array($this->attributes['status'], self::STATUSES)) {
+            $errors['status'] = 'Invalid manga status';
+        }
+        
+        return $errors;
     }
 }
