@@ -210,7 +210,7 @@ class ChapterApiController extends BaseApiController
             'volume_number' => $chapter->volume_number,
             'page_count' => $chapter->page_count,
             'view_count' => $chapter->view_count,
-            'published_at' => $chapter->published_at?->toISOString(),
+            'published_at' => optional($chapter->published_at)->toISOString(),
             'is_premium' => $chapter->is_premium,
             'url' => $chapter->getUrl(),
             'manga' => [
@@ -246,8 +246,8 @@ class ChapterApiController extends BaseApiController
                 'canonical_url' => $chapter->getCanonicalUrl(),
                 'breadcrumbs' => $chapter->getBreadcrumbs()
             ],
-            'created_at' => $chapter->created_at?->toISOString(),
-            'updated_at' => $chapter->updated_at?->toISOString()
+            'created_at' => optional($chapter->created_at)->toISOString(),
+            'updated_at' => optional($chapter->updated_at)->toISOString()
         ];
     }
 

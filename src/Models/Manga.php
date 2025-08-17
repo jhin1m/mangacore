@@ -526,7 +526,7 @@ class Manga extends Model implements TaxonomyInterface, Cacheable, SeoInterface
                 'total_chapters' => $this->chapters()->count(),
                 'total_volumes' => $this->volumes()->count(),
                 'total_pages' => $this->chapters()->withCount('pages')->get()->sum('pages_count'),
-                'latest_chapter' => $this->chapters()->orderBy('chapter_number', 'desc')->first()?->chapter_number,
+                'latest_chapter' => optional($this->chapters()->orderBy('chapter_number', 'desc')->first())->chapter_number,
                 'last_updated' => $this->updated_at,
                 'average_rating' => $this->getAverageUserRating(),
                 'rating_count' => $this->getUserRatingCount(),

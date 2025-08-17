@@ -58,7 +58,16 @@ class Catalog extends Model implements TaxonomyInterface, Cacheable, SeoInterfac
         $site_routes = setting('site_routes_types', '/danh-sach/{type}');
         if (strpos($site_routes, '{type}')) $params['type'] = $this->slug;
         if (strpos($site_routes, '{id}')) $params['id'] = $this->id;
-        return route('types.movies.index', $params);
+        
+        // Check if manga listing route exists, fallback to basic URL structure
+        if (\Route::has('types.manga.index')) {
+            return route('types.manga.index', $params);
+        } elseif (\Route::has('manga.index')) {
+            return route('manga.index', $params);
+        } else {
+            // Fallback to manual URL construction
+            return url($site_routes ? str_replace(['{type}', '{id}'], [$this->slug, $this->id], $site_routes) : '/danh-sach/' . $this->slug);
+        }
     }
 
     public function generateSeoTags()

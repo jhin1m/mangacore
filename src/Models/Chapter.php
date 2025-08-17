@@ -446,7 +446,7 @@ class Chapter extends Model implements Cacheable, HasUrlInterface, SeoInterface
                             'title' => $ch->title,
                             'chapter_number' => $ch->chapter_number,
                             'volume_number' => $ch->volume_number,
-                            'published_at' => $ch->published_at?->toISOString(),
+                            'published_at' => optional($ch->published_at)->toISOString(),
                             'is_current' => $ch->id === $this->id,
                             'url' => $ch->getUrl()
                         ];

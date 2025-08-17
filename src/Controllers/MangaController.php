@@ -12,6 +12,95 @@ use Ophim\Core\Models\ReadingProgress;
 class MangaController extends Controller
 {
     /**
+     * Display manga listing page
+     *
+     * @param Request $request
+     * @param string|null $type
+     * @return View
+     */
+    public function index(Request $request, $type = null): View
+    {
+        $query = Manga::query();
+        
+        // Filter by catalog type if provided
+        if ($type) {
+            $catalog = \Ophim\Core\Models\Catalog::where('slug', $type)->first();
+            if ($catalog) {
+                // Apply catalog-specific filtering logic here
+                // This would depend on how catalogs relate to manga
+            }
+        }
+        
+        // Apply filters from request
+        if ($request->filled('category')) {
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+        
+        if ($request->filled('tag')) {
+            $query->whereHas('tags', function ($q) use ($request) {
+                $q->where('slug', $request->tag);
+            });
+        }
+        
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+        
+        if ($request->filled('demographic')) {
+            $query->where('demographic', $request->demographic);
+        }
+        
+        // Search functionality
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('original_title', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('other_name', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+        
+        // Sorting
+        $sortBy = $request->input('sort', 'updated_at');
+        $sortOrder = $request->input('order', 'desc');
+        
+        switch ($sortBy) {
+            case 'title':
+                $query->orderBy('title', $sortOrder);
+                break;
+            case 'rating':
+                $query->orderBy('rating', $sortOrder);
+                break;
+            case 'view_count':
+                $query->orderBy('view_count', $sortOrder);
+                break;
+            case 'publication_year':
+                $query->orderBy('publication_year', $sortOrder);
+                break;
+            default:
+                $query->orderBy('updated_at', $sortOrder);
+        }
+        
+        // Pagination
+        $perPage = $request->input('per_page', 24);
+        $manga = $query->with(['categories', 'authors', 'artists'])
+                      ->paginate($perPage);
+        
+        // Generate SEO tags for listing page
+        $pageTitle = $type ? "Danh sách {$type}" : 'Danh sách manga';
+        \SEOMeta::setTitle($pageTitle);
+        \SEOMeta::setDescription("Khám phá bộ sưu tập manga phong phú với nhiều thể loại hấp dẫn");
+        
+        return view('core.manga.index', compact('manga', 'type'));
+    }
+
+    /**
      * Display manga details with chapter list
      *
      * @param Manga $manga
@@ -83,7 +172,7 @@ class MangaController extends Controller
                 'title' => $chapter->getFormattedTitle(),
                 'chapter_number' => $chapter->chapter_number,
                 'page_count' => $chapter->page_count,
-                'published_at' => $chapter->published_at?->format('Y-m-d'),
+                'published_at' => optional($chapter->published_at)->format('Y-m-d'),
                 'url' => $chapter->getUrl(),
                 'is_completed' => $isCompleted,
                 'is_premium' => $chapter->is_premium,
@@ -407,7 +496,7 @@ class MangaController extends Controller
                     'title' => $chapter->getFormattedTitle(),
                     'chapter_number' => $chapter->chapter_number,
                     'page_count' => $chapter->page_count,
-                    'published_at' => $chapter->published_at?->format('Y-m-d'),
+                    'published_at' => optional($chapter->published_at)->format('Y-m-d'),
                     'url' => $chapter->getUrl(),
                     'is_completed' => $chapter->is_completed ?? false,
                     'is_premium' => $chapter->is_premium,
@@ -421,7 +510,7 @@ class MangaController extends Controller
                     'volume_number' => $group['volume']->volume_number,
                     'title' => $group['volume']->getFormattedTitle(),
                     'chapter_count' => $group['volume']->chapter_count,
-                    'published_at' => $group['volume']->published_at?->format('Y-m-d'),
+                    'published_at' => optional($group['volume']->published_at)->format('Y-m-d'),
                 ] : null,
                 'chapters' => $chapters
             ];
@@ -555,5 +644,143 @@ class MangaController extends Controller
             'is_bookmarked' => $isBookmarked,
             'message' => $message
         ]);
+    }
+
+    /**
+     * Display manga by author
+     *
+     * @param Request $request
+     * @param string $author
+     * @return View
+     */
+    public function byAuthor(Request $request, $author): View
+    {
+        $authorModel = \Ophim\Core\Models\Author::where('slug', $author)->firstOrFail();
+        
+        $manga = $authorModel->manga()
+            ->with(['categories', 'authors', 'artists'])
+            ->orderBy('updated_at', 'desc')
+            ->paginate(24);
+        
+        $authorModel->generateSeoTags();
+        
+        return view('core.manga.by_taxonomy', compact('manga', 'authorModel'))
+            ->with('taxonomyType', 'author')
+            ->with('taxonomyName', $authorModel->name);
+    }
+
+    /**
+     * Display manga by artist
+     *
+     * @param Request $request
+     * @param string $artist
+     * @return View
+     */
+    public function byArtist(Request $request, $artist): View
+    {
+        $artistModel = \Ophim\Core\Models\Artist::where('slug', $artist)->firstOrFail();
+        
+        $manga = $artistModel->manga()
+            ->with(['categories', 'authors', 'artists'])
+            ->orderBy('updated_at', 'desc')
+            ->paginate(24);
+        
+        $artistModel->generateSeoTags();
+        
+        return view('core.manga.by_taxonomy', compact('manga', 'artistModel'))
+            ->with('taxonomyType', 'artist')
+            ->with('taxonomyName', $artistModel->name);
+    }
+
+    /**
+     * Display manga by publisher
+     *
+     * @param Request $request
+     * @param string $publisher
+     * @return View
+     */
+    public function byPublisher(Request $request, $publisher): View
+    {
+        $publisherModel = \Ophim\Core\Models\Publisher::where('slug', $publisher)->firstOrFail();
+        
+        $manga = $publisherModel->manga()
+            ->with(['categories', 'authors', 'artists'])
+            ->orderBy('updated_at', 'desc')
+            ->paginate(24);
+        
+        $publisherModel->generateSeoTags();
+        
+        return view('core.manga.by_taxonomy', compact('manga', 'publisherModel'))
+            ->with('taxonomyType', 'publisher')
+            ->with('taxonomyName', $publisherModel->name);
+    }
+
+    /**
+     * Display manga by origin
+     *
+     * @param Request $request
+     * @param string $origin
+     * @return View
+     */
+    public function byOrigin(Request $request, $origin): View
+    {
+        $originModel = \Ophim\Core\Models\Origin::where('slug', $origin)->firstOrFail();
+        
+        $manga = $originModel->manga()
+            ->with(['categories', 'authors', 'artists'])
+            ->orderBy('updated_at', 'desc')
+            ->paginate(24);
+        
+        $originModel->generateSeoTags();
+        
+        return view('core.manga.by_taxonomy', compact('manga', 'originModel'))
+            ->with('taxonomyType', 'origin')
+            ->with('taxonomyName', $originModel->name);
+    }
+
+    /**
+     * Display manga by category
+     *
+     * @param Request $request
+     * @param string $category
+     * @return View
+     */
+    public function byCategory(Request $request, $category): View
+    {
+        $categoryModel = \Ophim\Core\Models\Category::where('slug', $category)->firstOrFail();
+        
+        $manga = $categoryModel->manga()
+            ->with(['categories', 'authors', 'artists'])
+            ->orderBy('updated_at', 'desc')
+            ->paginate(24);
+        
+        $categoryModel->generateSeoTags();
+        
+        return view('core.manga.by_taxonomy', compact('manga', 'categoryModel'))
+            ->with('taxonomyType', 'category')
+            ->with('taxonomyName', $categoryModel->name);
+    }
+
+    /**
+     * Display manga by tag
+     *
+     * @param Request $request
+     * @param string $tag
+     * @return View
+     */
+    public function byTag(Request $request, $tag): View
+    {
+        $tagModel = \Ophim\Core\Models\Tag::where('slug', $tag)->firstOrFail();
+        
+        $manga = $tagModel->manga()
+            ->with(['categories', 'authors', 'artists'])
+            ->orderBy('updated_at', 'desc')
+            ->paginate(24);
+        
+        $tagModel->generateSeoTags();
+        
+        return view('core.manga.by_taxonomy', compact('manga', 'tagModel'))
+            ->with('taxonomyType', 'tag')
+            ->with('taxonomyName', $tagModel->name);
     }
 }

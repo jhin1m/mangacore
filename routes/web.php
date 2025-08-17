@@ -17,6 +17,39 @@ use Ophim\Core\Controllers\MangaController;
 | with their own implementations.
 */
 
+// Manga listing routes
+Route::get('/danh-sach/{type}', [MangaController::class, 'index'])
+    ->name('types.manga.index')
+    ->where(['type' => '[a-zA-Z0-9\-_]+']);
+
+Route::get('/manga', [MangaController::class, 'index'])
+    ->name('manga.index');
+
+// Taxonomy listing routes
+Route::get('/tac-gia/{author}', [MangaController::class, 'byAuthor'])
+    ->name('authors.manga.index')
+    ->where(['author' => '[a-zA-Z0-9\-_]+']);
+
+Route::get('/hoa-si/{artist}', [MangaController::class, 'byArtist'])
+    ->name('artists.manga.index')
+    ->where(['artist' => '[a-zA-Z0-9\-_]+']);
+
+Route::get('/nha-xuat-ban/{publisher}', [MangaController::class, 'byPublisher'])
+    ->name('publishers.manga.index')
+    ->where(['publisher' => '[a-zA-Z0-9\-_]+']);
+
+Route::get('/xuat-xu/{origin}', [MangaController::class, 'byOrigin'])
+    ->name('origins.manga.index')
+    ->where(['origin' => '[a-zA-Z0-9\-_]+']);
+
+Route::get('/the-loai/{category}', [MangaController::class, 'byCategory'])
+    ->name('categories.manga.index')
+    ->where(['category' => '[a-zA-Z0-9\-_]+']);
+
+Route::get('/tag/{tag}', [MangaController::class, 'byTag'])
+    ->name('tags.manga.index')
+    ->where(['tag' => '[a-zA-Z0-9\-_]+']);
+
 // Chapter reading routes
 Route::get('/manga/{manga}/chapter-{chapter}-{id}', [ReaderController::class, 'show'])
     ->name('chapters.show')

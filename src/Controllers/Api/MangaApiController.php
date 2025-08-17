@@ -181,7 +181,7 @@ class MangaApiController extends BaseApiController
             'url' => $manga->getUrl(),
             'authors' => $manga->authors->pluck('name'),
             'categories' => $manga->categories->pluck('name'),
-            'updated_at' => $manga->updated_at?->toISOString()
+            'updated_at' => optional($manga->updated_at)->toISOString()
         ];
     }
 
@@ -261,7 +261,7 @@ class MangaApiController extends BaseApiController
                     'id' => $volume->id,
                     'volume_number' => $volume->volume_number,
                     'title' => $volume->title,
-                    'published_at' => $volume->published_at?->toISOString(),
+                    'published_at' => optional($volume->published_at)->toISOString(),
                     'chapter_count' => $volume->chapter_count,
                     'chapters' => $volume->chapters->map(function ($chapter) {
                         return $this->transformChapter($chapter);
@@ -291,8 +291,8 @@ class MangaApiController extends BaseApiController
                 'publication_year' => $manga->publication_year,
                 'status' => $manga->status,
                 'is_completed' => $manga->is_completed,
-                'last_updated' => $manga->updated_at?->toISOString(),
-                'latest_chapter' => $manga->chapters()->orderBy('chapter_number', 'desc')->first()?->chapter_number
+                'last_updated' => optional($manga->updated_at)->toISOString(),
+                'latest_chapter' => optional($manga->chapters()->orderBy('chapter_number', 'desc')->first())->chapter_number
             ];
 
             return $this->successResponse($stats, 'Statistics retrieved successfully');
@@ -504,8 +504,8 @@ class MangaApiController extends BaseApiController
                 'name' => $origin->name,
                 'slug' => $origin->slug
             ]),
-            'created_at' => $manga->created_at?->toISOString(),
-            'updated_at' => $manga->updated_at?->toISOString()
+            'created_at' => optional($manga->created_at)->toISOString(),
+            'updated_at' => optional($manga->updated_at)->toISOString()
         ];
     }
 
@@ -525,7 +525,7 @@ class MangaApiController extends BaseApiController
                 'id' => $volume->id,
                 'volume_number' => $volume->volume_number,
                 'title' => $volume->title,
-                'published_at' => $volume->published_at?->toISOString(),
+                'published_at' => optional($volume->published_at)->toISOString(),
                 'chapter_count' => $volume->chapter_count
             ];
         });
@@ -634,11 +634,11 @@ class MangaApiController extends BaseApiController
             'volume_number' => $chapter->volume_number,
             'page_count' => $chapter->page_count,
             'view_count' => $chapter->view_count,
-            'published_at' => $chapter->published_at?->toISOString(),
+            'published_at' => optional($chapter->published_at)->toISOString(),
             'is_premium' => $chapter->is_premium,
             'url' => $chapter->getUrl(),
-            'created_at' => $chapter->created_at?->toISOString(),
-            'updated_at' => $chapter->updated_at?->toISOString()
+            'created_at' => optional($chapter->created_at)->toISOString(),
+            'updated_at' => optional($chapter->updated_at)->toISOString()
         ];
     }
 }

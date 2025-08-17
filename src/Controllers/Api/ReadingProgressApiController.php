@@ -356,8 +356,8 @@ class ReadingProgressApiController extends BaseApiController
             ],
             'page_number' => $progress->page_number,
             'progress_percentage' => round(($progress->page_number / $progress->chapter->page_count) * 100, 2),
-            'completed_at' => $progress->completed_at?->toISOString(),
-            'updated_at' => $progress->updated_at?->toISOString()
+            'completed_at' => optional($progress->completed_at)->toISOString(),
+            'updated_at' => optional($progress->updated_at)->toISOString()
         ];
 
         if ($detailed) {
