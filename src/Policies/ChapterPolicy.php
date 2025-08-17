@@ -9,6 +9,13 @@ class ChapterPolicy
 {
     use HandlesAuthorization;
 
+    public function before($user)
+    {
+        if ($user->hasRole('Admin')) {
+            return true;
+        }
+    }
+
     /**
      * Determine whether the user can view any chapters.
      *
@@ -17,7 +24,7 @@ class ChapterPolicy
      */
     public function viewAny($user)
     {
-        return $user->can('browse chapters') || $user->can('browse manga');
+        return $user->hasPermissionTo('Browse chapter') || $user->hasPermissionTo('Browse manga');
     }
 
     /**
@@ -29,7 +36,7 @@ class ChapterPolicy
      */
     public function view($user, Chapter $chapter)
     {
-        return $user->can('read chapters') || $user->can('read manga');
+        return $user->hasPermissionTo('Browse chapter') || $user->hasPermissionTo('Browse manga');
     }
 
     /**
@@ -40,7 +47,7 @@ class ChapterPolicy
      */
     public function create($user)
     {
-        return $user->can('create chapters') || $user->can('create manga');
+        return $user->hasPermissionTo('Create chapter') || $user->hasPermissionTo('Create manga');
     }
 
     /**
@@ -52,7 +59,7 @@ class ChapterPolicy
      */
     public function update($user, Chapter $chapter)
     {
-        return $user->can('update chapters') || $user->can('update manga');
+        return $user->hasPermissionTo('Update chapter') || $user->hasPermissionTo('Update manga');
     }
 
     /**
@@ -64,7 +71,7 @@ class ChapterPolicy
      */
     public function delete($user, Chapter $chapter)
     {
-        return $user->can('delete chapters') || $user->can('delete manga');
+        return $user->hasPermissionTo('Delete chapter') || $user->hasPermissionTo('Delete manga');
     }
 
     /**
@@ -76,7 +83,7 @@ class ChapterPolicy
      */
     public function restore($user, Chapter $chapter)
     {
-        return $user->can('restore chapters') || $user->can('restore manga');
+        return $user->hasPermissionTo('Update chapter') || $user->hasPermissionTo('Update manga');
     }
 
     /**
@@ -88,7 +95,7 @@ class ChapterPolicy
      */
     public function forceDelete($user, Chapter $chapter)
     {
-        return $user->can('force delete chapters') || $user->can('force delete manga');
+        return $user->hasPermissionTo('Delete chapter') || $user->hasPermissionTo('Delete manga');
     }
 
     /**
@@ -99,7 +106,7 @@ class ChapterPolicy
      */
     public function browse($user)
     {
-        return $user->can('browse chapters') || $user->can('browse manga');
+        return $user->hasPermissionTo('Browse chapter') || $user->hasPermissionTo('Browse manga');
     }
 
     /**
@@ -110,7 +117,7 @@ class ChapterPolicy
      */
     public function read($user)
     {
-        return $user->can('read chapters') || $user->can('read manga');
+        return $user->hasPermissionTo('Browse chapter') || $user->hasPermissionTo('Browse manga');
     }
 
     /**
@@ -121,7 +128,7 @@ class ChapterPolicy
      */
     public function edit($user)
     {
-        return $user->can('edit chapters') || $user->can('edit manga');
+        return $user->hasPermissionTo('Update chapter') || $user->hasPermissionTo('Update manga');
     }
 
     /**
@@ -132,7 +139,7 @@ class ChapterPolicy
      */
     public function add($user)
     {
-        return $user->can('add chapters') || $user->can('add manga');
+        return $user->hasPermissionTo('Create chapter') || $user->hasPermissionTo('Create manga');
     }
 
     /**
@@ -143,7 +150,7 @@ class ChapterPolicy
      */
     public function bulkDelete($user)
     {
-        return $user->can('bulk delete chapters') || $user->can('bulk delete manga');
+        return $user->hasPermissionTo('Delete chapter') || $user->hasPermissionTo('Delete manga');
     }
 
     /**
@@ -166,7 +173,7 @@ class ChapterPolicy
      */
     public function uploadImages($user)
     {
-        return $user->can('upload images') || $user->can('create chapters') || $user->can('update chapters');
+        return $user->hasPermissionTo('Create chapter') || $user->hasPermissionTo('Update chapter');
     }
 
     /**
@@ -178,7 +185,7 @@ class ChapterPolicy
      */
     public function optimizeImages($user, Chapter $chapter)
     {
-        return $this->update($user, $chapter) && ($user->can('optimize images') || $user->can('update chapters'));
+        return $this->update($user, $chapter);
     }
 
     /**
@@ -189,7 +196,7 @@ class ChapterPolicy
      */
     public function schedulePublishing($user)
     {
-        return $user->can('schedule publishing') || $user->can('update chapters') || $user->can('publish chapters');
+        return $user->hasPermissionTo('Update chapter') || $user->hasPermissionTo('Update manga');
     }
 
     /**
@@ -200,6 +207,6 @@ class ChapterPolicy
      */
     public function batchUpload($user)
     {
-        return $user->can('batch upload') || $user->can('create chapters');
+        return $user->hasPermissionTo('Create chapter') || $user->hasPermissionTo('Create manga');
     }
 }
